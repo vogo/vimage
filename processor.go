@@ -19,7 +19,6 @@ package vimage
 
 import (
 	"bytes"
-	"fmt"
 	"image"
 	"image/jpeg"
 	"image/png"
@@ -63,17 +62,13 @@ func ProcessImage(imgData []byte, processors []ImageProcessor, options *Processo
 	// 解码图片
 	srcImg, format, err := image.Decode(bytes.NewReader(imgData))
 	if err != nil {
-		return nil, fmt.Errorf("解码图片失败: %w", err)
+		return nil, err
 	}
 
 	// 应用处理器链
-	currentImg := srcImg
-	for i, processor := range processors {
-		var err error
-		currentImg, err = processor.Process(currentImg)
-		if err != nil {
-			return nil, fmt.Errorf("处理器 %d 处理失败: %w", i, err)
-		}
+	currentImg, err := Process(srcImg, processors)
+	if err != nil {
+		return nil, err
 	}
 
 	// 编码图片
@@ -89,8 +84,22 @@ func ProcessImage(imgData []byte, processors []ImageProcessor, options *Processo
 	}
 
 	if err != nil {
-		return nil, fmt.Errorf("编码图片失败: %w", err)
+		return nil, err
 	}
 
 	return buf.Bytes(), nil
+}
+
+// Process 循环处理图片
+func Process(img image.Image, processors []ImageProcessor) (image.Image, error) {
+	var err error
+	currentImg := img
+	for _, processor := range processors {
+		currentImg, err = processor.Process(currentImg)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return currentImg, nil
 }
