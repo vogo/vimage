@@ -29,8 +29,10 @@ import (
 	"github.com/golang/freetype/truetype"
 )
 
-var notoSansSCWghtFont *truetype.Font
-var notoSansSCWghtFontMutex = sync.Mutex{}
+var (
+	notoSansSCWghtFont      *truetype.Font
+	notoSansSCWghtFontMutex = sync.Mutex{}
+)
 
 func LoadNotoSansSCVariableFontWght() (*truetype.Font, error) {
 	notoSansSCWghtFontMutex.Lock()
@@ -97,15 +99,4 @@ func GetDefaultFont() (*truetype.Font, error) {
 	}
 
 	return defaultFont, nil
-}
-
-func requireFont() *truetype.Font {
-	if defaultFont != nil {
-		return defaultFont
-	}
-	font, err := LoadNotoSansSCVariableFontWght()
-	if err != nil {
-		panic(err)
-	}
-	return font
 }

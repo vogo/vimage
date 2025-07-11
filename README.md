@@ -10,7 +10,8 @@ go get github.com/vogo/vimage
 
 ## 主要功能
 
-- 图像调整大小 (Resize)
+- 图像缩放 (Zoom) - 提供精确的像素级缩放
+- 图像切割 (Cut) - 从图像中切割指定区域
 - 正方形裁剪 (Square)
 - 圆形裁剪 (Circle)
 - 马赛克处理 (Mosaic)
@@ -37,15 +38,53 @@ processors := []vimage.ImageProcessor{
 result, err := vimage.ProcessImage(imgData, processors, nil)
 ```
 
-### 调整图像大小
+### 图像缩放 (Zoom)
 
 ```go
-// 创建调整大小处理器
-resizeProcessor := vimage.NewResizeProcessor(width, height)
+// 精确缩放（指定宽高）
+zoomProcessor := vimage.NewZoomProcessor(width, height)
+
+// 按比例缩放（例如：缩小到原来的50%）
+zoomProcessor := vimage.NewZoomRatioProcessor(0.5)
+
+// 按宽度缩放（高度按比例计算）
+zoomProcessor := vimage.NewZoomWidthProcessor(300)
+
+// 按高度缩放（宽度按比例计算）
+zoomProcessor := vimage.NewZoomHeightProcessor(200)
+
+// 按最大边缩放（保持比例）
+zoomProcessor := vimage.NewZoomMaxProcessor(500)
+
+// 按最小边缩放（保持比例）
+zoomProcessor := vimage.NewZoomMinProcessor(300)
+
+// 可选：设置缩放算法（默认为双线性插值）
+zoomProcessor.WithScaler(draw.BiLinear) // 可选值: draw.NearestNeighbor, draw.ApproxBiLinear, draw.BiLinear, draw.CatmullRom
 
 // 处理图像
-resizedImg, err := resizeProcessor.Process(srcImg)
+zoomedImg, err := zoomProcessor.Process(srcImg)
 ```
+
+### 图像切割 (Cut)
+
+```go
+// 使用预定义位置切割图像
+// 位置可选: "center", "top", "bottom", "left", "right"
+cutProcessor := vimage.NewCutProcessor(width, height, vimage.CutPositionCenter)
+
+// 使用自定义区域切割图像
+// x, y 是左上角坐标
+cutProcessor := vimage.NewCutProcessorWithRegion(width, height, x, y)
+
+// 创建正方形切割处理器（便捷方法）
+cutProcessor := vimage.NewSquareCutProcessor(size, vimage.CutPositionCenter)
+
+// 处理图像
+cutImg, err := cutProcessor.Process(srcImg)
+```
+
+
 
 ### 正方形裁剪
 
@@ -142,14 +181,14 @@ captchaImg, err := vimage.GenerateCaptcha(captchaText, config)
 ### 组合使用示例
 
 ```go
-// 将图片裁剪为正方形并调整大小
-func SquareAndResizeImage(imgData []byte, position string, size int) ([]byte, error) {
+// 将图片裁剪为正方形并缩放
+func SquareAndZoomImage(imgData []byte, position string, size int) ([]byte, error) {
     // 创建处理器链
     processors := []vimage.ImageProcessor{
         // 先裁剪为正方形
         vimage.NewSquareProcessor(position),
-        // 再调整大小
-        vimage.NewResizeProcessor(size, size),
+        // 再缩放
+        vimage.NewZoomProcessor(size, size),
     }
 
     // 处理图片
@@ -164,6 +203,54 @@ func SquareAndCircleImage(imgData []byte, position string) ([]byte, error) {
         vimage.NewSquareProcessor(position),
         // 再应用圆形裁剪
         &vimage.CircleProcessor{},
+    }
+
+    // 处理图片
+    return vimage.ProcessImage(imgData, processors, nil)
+}
+
+// 按比例缩放图片并添加水印
+func ZoomRatioAndWatermark(imgData []byte, ratio float64, watermarkText string) ([]byte, error) {
+    // 创建处理器链
+    processors := []vimage.ImageProcessor{
+        // 先按比例缩放
+        vimage.NewZoomRatioProcessor(ratio), // 使用新的缩放处理器
+        // 再添加水印
+        &vimage.WatermarkProcessor{
+            Text:     watermarkText,
+            FontSize: 24,
+            Color:    image.White, // 使用预定义的白色
+            Opacity:  0.7,
+            Position: "bottom-right",
+        },
+    }
+
+    // 处理图片
+    return vimage.ProcessImage(imgData, processors, nil)
+}
+
+// 按最大边切割图片并裁剪为圆形
+func CutAndCircle(imgData []byte, maxSize int) ([]byte, error) {
+    // 创建处理器链
+    processors := []vimage.ImageProcessor{
+        // 先裁剪为正方形
+        vimage.NewCutProcessor(maxSize, maxSize, vimage.CutPositionCenter), // 使用新的切割处理器
+        // 最后裁剪为圆形
+        &vimage.CircleProcessor{},
+    }
+
+    // 处理图片
+    return vimage.ProcessImage(imgData, processors, nil)
+}
+
+// 先切割指定区域再缩放
+func CutAndZoom(imgData []byte, cutWidth, cutHeight, x, y int, zoomRatio float64) ([]byte, error) {
+    // 创建处理器链
+    processors := []vimage.ImageProcessor{
+        // 先切割指定区域
+        vimage.NewCutProcessorWithRegion(cutWidth, cutHeight, x, y),
+        // 再按比例缩放
+        vimage.NewZoomRatioProcessor(zoomRatio),
     }
 
     // 处理图片

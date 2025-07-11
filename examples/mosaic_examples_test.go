@@ -15,35 +15,27 @@
  * limitations under the License.
  */
 
-package vimage
+package examples
 
 import (
-	"image"
+	"os"
+	"testing"
 
-	"github.com/fogleman/gg"
+	"github.com/vogo/vimage"
 )
 
-// ResizeProcessor 调整大小处理器
-type ResizeProcessor struct {
-	Width  int // 目标宽度
-	Height int // 目标高度
-}
+func TestMosaicLocalImage(t *testing.T) {
+	testImg, err := os.ReadFile("/tmp/test_cert.jpeg")
+	if err != nil {
+		t.Skipf("读取测试图片失败: %v", err)
+	}
 
-// Process 实现ImageProcessor接口
-func (p *ResizeProcessor) Process(img image.Image) (image.Image, error) {
-	// 创建新的上下文
-	dc := gg.NewContext(p.Width, p.Height)
-
-	// 绘制并缩放图像
-	dc.DrawImage(img, 0, 0)
-
-	return dc.Image(), nil
-}
-
-// NewResizeProcessor 创建新的调整大小处理器
-func NewResizeProcessor(width, height int) *ResizeProcessor {
-	return &ResizeProcessor{
-		Width:  width,
-		Height: height,
+	// 使用向后兼容函数
+	result, err := vimage.MosaicImageSingle(testImg, 683, 355, 872, 380)
+	if err != nil {
+		t.Fatalf("马赛克处理失败: %v", err)
+	}
+	if err := os.WriteFile("/tmp/test_cert_mosaic.jpeg", result, 0o644); err != nil {
+		t.Fatalf("保存马赛克图片失败: %v", err)
 	}
 }

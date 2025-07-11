@@ -38,17 +38,6 @@ type Processor interface {
 	Process(img image.Image) (image.Image, error)
 }
 
-// Register all processors
-var Processors = map[string]Processor{
-	"mosaic":    &MosaicProcessor{},
-	"noise":     &NoiseProcessor{},
-	"resize":    &ResizeProcessor{},
-	"watermark": &WatermarkProcessor{},
-	"circle":    &CircleProcessor{},
-	"overlay":   &OverlayProcessor{},
-	"square":    &SquareProcessor{},
-}
-
 // ProcessorOptions 处理器选项
 type ProcessorOptions struct {
 	// 可以添加通用选项

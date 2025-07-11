@@ -22,7 +22,6 @@ import (
 	"image"
 	"image/color"
 	"image/png"
-	"os"
 	"testing"
 )
 
@@ -85,14 +84,6 @@ func TestProcessImage(t *testing.T) {
 	if err != nil {
 		t.Fatalf("处理后的图片无法解码: %v", err)
 	}
-
-	// 保存测试图片
-	err = os.WriteFile("/tmp/test_processor.png", result, 0o644)
-	if err != nil {
-		t.Logf("Warning: Could not save test image: %v", err)
-	} else {
-		t.Logf("处理后的图片已保存到: /tmp/test_processor.png")
-	}
 }
 
 // TestMultipleProcessors 测试多个处理器链式处理
@@ -152,25 +143,17 @@ func TestMultipleProcessors(t *testing.T) {
 	if err != nil {
 		t.Fatalf("处理后的图片无法解码: %v", err)
 	}
-
-	// 保存测试图片
-	err = os.WriteFile("/tmp/test_multiple_processors.png", result, 0o644)
-	if err != nil {
-		t.Logf("Warning: Could not save test image: %v", err)
-	} else {
-		t.Logf("处理后的图片已保存到: /tmp/test_multiple_processors.png")
-	}
 }
 
-// TestResizeProcessor 测试调整大小处理器
-func TestResizeProcessor(t *testing.T) {
+// TestZoomProcessor 测试缩放处理器
+func TestZoomProcessor(t *testing.T) {
 	// 创建测试图片
 	testImg := createTestImageForProcessor(400, 300)
 
 	// 创建处理器链
 	processors := []ImageProcessor{
-		// 添加调整大小处理器
-		NewResizeProcessor(200, 150),
+		// 添加缩放处理器
+		NewZoomProcessor(200, 150),
 	}
 
 	// 处理图片
@@ -188,15 +171,7 @@ func TestResizeProcessor(t *testing.T) {
 	// 验证图片尺寸
 	bounds := decodedImg.Bounds()
 	if bounds.Dx() != 200 || bounds.Dy() != 150 {
-		t.Fatalf("调整大小失败，期望尺寸 200x150，实际尺寸 %dx%d", bounds.Dx(), bounds.Dy())
-	}
-
-	// 保存测试图片
-	err = os.WriteFile("/tmp/test_resize_processor.png", result, 0o644)
-	if err != nil {
-		t.Logf("Warning: Could not save test image: %v", err)
-	} else {
-		t.Logf("处理后的图片已保存到: /tmp/test_resize_processor.png")
+		t.Fatalf("缩放失败，期望尺寸 200x150，实际尺寸 %dx%d", bounds.Dx(), bounds.Dy())
 	}
 }
 
@@ -232,14 +207,6 @@ func TestSquareProcessorInChain(t *testing.T) {
 	// 验证尺寸是较小的一边（300）
 	if bounds.Dx() != 300 {
 		t.Fatalf("裁剪尺寸错误，期望尺寸 300x300，实际尺寸 %dx%d", bounds.Dx(), bounds.Dy())
-	}
-
-	// 保存测试图片
-	err = os.WriteFile("/tmp/test_square_processor.png", result, 0o644)
-	if err != nil {
-		t.Logf("Warning: Could not save test image: %v", err)
-	} else {
-		t.Logf("处理后的图片已保存到: /tmp/test_square_processor.png")
 	}
 }
 
