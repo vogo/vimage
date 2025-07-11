@@ -27,6 +27,10 @@ import (
 // CircleProcessor implements the Processor interface for circular image cropping
 type CircleProcessor struct{}
 
+func NewCircleProcessor() *CircleProcessor {
+	return &CircleProcessor{}
+}
+
 // Process crops the image into a circle, making pixels outside the circle transparent
 // If the image is not square, returns an error
 func (p *CircleProcessor) Process(img image.Image) (image.Image, error) {
