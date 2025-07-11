@@ -21,10 +21,6 @@ import (
 	"fmt"
 	"image"
 	"image/color"
-	"image/jpeg"
-	"image/png"
-	"os"
-	"path/filepath"
 	"testing"
 
 	"github.com/vogo/vimage"
@@ -128,25 +124,4 @@ func createColorBlockImage(width, height int) image.Image {
 	}
 
 	return img
-}
-
-// 保存图像到文件
-func saveImage(img image.Image, filename string) error {
-	file, err := os.Create(filename)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	// 根据文件扩展名选择编码格式
-	ext := filepath.Ext(filename)
-	switch ext {
-	case ".jpg", ".jpeg":
-		return jpeg.Encode(file, img, &jpeg.Options{Quality: 90})
-	case ".png":
-		return png.Encode(file, img)
-	default:
-		// 默认使用PNG格式
-		return png.Encode(file, img)
-	}
 }

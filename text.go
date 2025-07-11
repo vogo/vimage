@@ -20,11 +20,11 @@ package vimage
 import (
 	"image"
 	"image/color"
-	"image/draw"
+	"math"
 
+	"github.com/fogleman/gg"
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/basicfont"
-	"golang.org/x/image/math/fixed"
 )
 
 // TextOptions 定义文本处理器的选项
@@ -33,6 +33,8 @@ type TextOptions struct {
 	Position image.Point
 	Font     font.Face
 	Color    color.Color
+	// 旋转角度（度数，顺时针方向）
+	Angle float64
 }
 
 // DefaultTextOptions 默认文本选项
@@ -57,18 +59,50 @@ func NewTextProcessor(opts TextOptions) *TextProcessor {
 	return &TextProcessor{Options: opts}
 }
 
+// WithAngle 设置文本旋转角度
+func (p *TextProcessor) WithAngle(angle float64) *TextProcessor {
+	p.Options.Angle = angle
+	return p
+}
+
 // Process 实现ImageProcessor接口
 func (p *TextProcessor) Process(img image.Image) (image.Image, error) {
-	dst := image.NewRGBA(img.Bounds())
-	draw.Draw(dst, dst.Bounds(), img, image.Point{}, draw.Src)
+	// 获取原始图片尺寸
+	bounds := img.Bounds()
+	width := bounds.Dx()
+	height := bounds.Dy()
 
-	drawer := &font.Drawer{
-		Dst:  dst,
-		Src:  image.NewUniform(p.Options.Color),
-		Face: p.Options.Font,
-		Dot:  fixed.P(p.Options.Position.X, p.Options.Position.Y),
+	// 创建gg上下文
+	dc := gg.NewContext(width, height)
+
+	// 绘制原始图像
+	dc.DrawImage(img, 0, 0)
+
+	// 设置字体和颜色
+	dc.SetFontFace(p.Options.Font)
+	dc.SetColor(p.Options.Color)
+
+	// 如果有旋转角度
+	if p.Options.Angle != 0 {
+		// 保存当前状态
+		dc.Push()
+
+		// 将角度转换为弧度
+		angle := p.Options.Angle * math.Pi / 180.0
+
+		// 移动到文本位置
+		dc.Translate(float64(p.Options.Position.X), float64(p.Options.Position.Y))
+		// 旋转指定角度
+		dc.Rotate(angle)
+		// 绘制文本（从原点开始）
+		dc.DrawString(p.Options.Text, 0, 0)
+
+		// 恢复状态
+		dc.Pop()
+	} else {
+		// 无旋转，直接绘制文本
+		dc.DrawString(p.Options.Text, float64(p.Options.Position.X), float64(p.Options.Position.Y))
 	}
-	drawer.DrawString(p.Options.Text)
 
-	return dst, nil
+	return dc.Image(), nil
 }
