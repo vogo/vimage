@@ -14,6 +14,7 @@ go get github.com/vogo/vimage
 - 图像切割 (Cut) - 从图像中切割指定区域
 - 正方形裁剪 (Square)
 - 圆形裁剪 (Circle)
+- 圆角处理 (Rounded Corner)
 - 马赛克处理 (Mosaic)
 - 水印添加 (Watermark)
 - 图像叠加 (Overlay)
@@ -98,6 +99,7 @@ squareImg, err := squareProcessor.Process(srcImg)
 ```
 
 ### 圆形裁剪
+```
 
 ```go
 // 创建圆形裁剪处理器
@@ -105,6 +107,16 @@ circleProcessor := &vimage.CircleProcessor{}
 
 // 处理图像（注意：输入图像必须是正方形）
 circleImg, err := circleProcessor.Process(squareImg)
+```
+
+### 圆角处理
+
+```go
+// 创建圆角处理器，指定圆角半径（像素）
+roundedProcessor := vimage.NewRoundedCornerProcessor(30)
+
+// 处理图像，将四个角切割成圆角，角外部分变为透明
+roundedImg, err := roundedProcessor.Process(srcImg)
 ```
 
 ### 马赛克处理
@@ -251,6 +263,20 @@ func CutAndZoom(imgData []byte, cutWidth, cutHeight, x, y int, zoomRatio float64
         vimage.NewCutProcessorWithRegion(cutWidth, cutHeight, x, y),
         // 再按比例缩放
         vimage.NewZoomRatioProcessor(zoomRatio),
+    }
+
+    // 处理图片
+    return vimage.ProcessImage(imgData, processors, nil)
+}
+
+// 缩放图片并添加圆角效果
+func ZoomAndRoundedCorner(imgData []byte, width, height, cornerRadius int) ([]byte, error) {
+    // 创建处理器链
+    processors := []vimage.ImageProcessor{
+        // 先缩放到指定尺寸
+        vimage.NewZoomProcessor(width, height),
+        // 再添加圆角效果
+        vimage.NewRoundedCornerProcessor(cornerRadius),
     }
 
     // 处理图片
