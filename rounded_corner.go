@@ -76,12 +76,15 @@ func (p *RoundedCornerProcessor) Process(img image.Image) (image.Image, error) {
 	// 处理每个像素
 	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 		for x := bounds.Min.X; x < bounds.Max.X; x++ {
-			// 检查是否在四个角的圆角区域外
-			if isInRoundedCorner(x, y, bounds, radius) {
-				// 在圆角内部，保留原始像素
-				dst.Set(x, y, img.At(x, y))
+			// 计算alpha
+			alpha := getCornerAlpha(x, y, bounds, float64(radius), 1.5)
+			if alpha > 0 {
+				// 获取原始颜色
+				r, g, b, a := img.At(x, y).RGBA()
+				// 计算新alpha
+				newA := uint8(float64(a>>8) * alpha)
+				dst.SetRGBA(x, y, color.RGBA{uint8(r>>8), uint8(g>>8), uint8(b>>8), newA})
 			} else {
-				// 在圆角外部，设置为透明
 				dst.Set(x, y, color.RGBA{0, 0, 0, 0})
 			}
 		}
@@ -125,4 +128,34 @@ func isInRoundedCorner(x, y int, bounds image.Rectangle, radius int) bool {
 
 	// 不在四个角，保留原像素
 	return true
+}
+
+// getCornerAlpha 计算像素在圆角区域的透明度
+// 返回0.0到1.0之间的值，表示透明度
+func getCornerAlpha(x, y int, bounds image.Rectangle, radius float64, fadeWidth float64) float64 {
+	var distance float64
+
+	// 左上角
+	if float64(x) < float64(bounds.Min.X)+radius && float64(y) < float64(bounds.Min.Y)+radius {
+		distance = math.Sqrt(math.Pow(float64(x)-(float64(bounds.Min.X)+radius), 2) + 
+			math.Pow(float64(y)-(float64(bounds.Min.Y)+radius), 2))
+	} else if float64(x) >= float64(bounds.Max.X)-radius && float64(y) < float64(bounds.Min.Y)+radius {
+		distance = math.Sqrt(math.Pow(float64(x)-(float64(bounds.Max.X)-radius-1), 2) + 
+			math.Pow(float64(y)-(float64(bounds.Min.Y)+radius), 2))
+	} else if float64(x) < float64(bounds.Min.X)+radius && float64(y) >= float64(bounds.Max.Y)-radius {
+		distance = math.Sqrt(math.Pow(float64(x)-(float64(bounds.Min.X)+radius), 2) + 
+			math.Pow(float64(y)-(float64(bounds.Max.Y)-radius-1), 2))
+	} else if float64(x) >= float64(bounds.Max.X)-radius && float64(y) >= float64(bounds.Max.Y)-radius {
+		distance = math.Sqrt(math.Pow(float64(x)-(float64(bounds.Max.X)-radius-1), 2) + 
+			math.Pow(float64(y)-(float64(bounds.Max.Y)-radius-1), 2))
+	} else {
+		return 1.0
+	}
+
+	if distance <= radius {
+		return 1.0
+	} else if distance <= radius + fadeWidth {
+		return 1.0 - (distance - radius) / fadeWidth
+	}
+	return 0.0
 }

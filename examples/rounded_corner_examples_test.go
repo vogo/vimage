@@ -24,12 +24,13 @@ import (
 	"image/color"
 	"image/png"
 	"os"
+	"testing"
 
 	"github.com/vogo/vimage"
 )
 
 // ExampleRoundedCornerProcessor 展示如何使用圆角处理器
-func ExampleRoundedCornerProcessor() {
+func TestRoundedCornerProcessor(t *testing.T) {
 	// 创建一个测试图像 (200x200 的蓝色方块)
 	img := image.NewRGBA(image.Rect(0, 0, 200, 200))
 	for y := 0; y < 200; y++ {
