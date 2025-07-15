@@ -63,7 +63,7 @@ func TestRoundedCornerProcessor(t *testing.T) {
 
 			// 验证图像尺寸未变
 			if result.Bounds().Dx() != 100 || result.Bounds().Dy() != 100 {
-				t.Errorf("图像尺寸应该保持不变，期望100x100，得到%dx%d", 
+				t.Errorf("图像尺寸应该保持不变，期望100x100，得到%dx%d",
 					result.Bounds().Dx(), result.Bounds().Dy())
 			}
 
@@ -71,16 +71,16 @@ func TestRoundedCornerProcessor(t *testing.T) {
 			if test.radius > 0 {
 				// 检查四个角是否透明
 				corners := []struct{ x, y int }{
-					{0, 0},                   // 左上
-					{99, 0},                  // 右上
-					{0, 99},                  // 左下
-					{99, 99},                 // 右下
+					{0, 0},   // 左上
+					{99, 0},  // 右上
+					{0, 99},  // 左下
+					{99, 99}, // 右下
 				}
 
 				for _, corner := range corners {
 					r, g, b, a := result.At(corner.x, corner.y).RGBA()
 					if a != 0 {
-						t.Errorf("角点(%d,%d)应该是透明的，但得到了RGBA(%d,%d,%d,%d)", 
+						t.Errorf("角点(%d,%d)应该是透明的，但得到了RGBA(%d,%d,%d,%d)",
 							corner.x, corner.y, r>>8, g>>8, b>>8, a>>8)
 					}
 				}
@@ -88,7 +88,7 @@ func TestRoundedCornerProcessor(t *testing.T) {
 				// 检查中心点是否保持原色
 				r, g, b, a := result.At(50, 50).RGBA()
 				if r>>8 != 255 || g>>8 != 0 || b>>8 != 0 || a>>8 != 255 {
-					t.Errorf("中心点应该保持红色，但得到了RGBA(%d,%d,%d,%d)", 
+					t.Errorf("中心点应该保持红色，但得到了RGBA(%d,%d,%d,%d)",
 						r>>8, g>>8, b>>8, a>>8)
 				}
 			}

@@ -24,14 +24,6 @@ import (
 	"image/png"
 )
 
-// ImageProcessor 定义图片处理器接口
-type ImageProcessor interface {
-	// Process 处理图片
-	// img: 输入图片
-	// 返回: 处理后的图片
-	Process(img image.Image) (image.Image, error)
-}
-
 // Processor 定义新的处理器接口，支持选项参数
 type Processor interface {
 	Process(img image.Image) (image.Image, error)
@@ -53,7 +45,7 @@ var DefaultProcessorOptions = ProcessorOptions{
 // processors: 处理器链
 // options: 处理选项
 // 返回: 处理后的图片字节数据和错误信息
-func ProcessImage(imgData []byte, processors []ImageProcessor, options *ProcessorOptions) ([]byte, error) {
+func ProcessImage(imgData []byte, processors []Processor, options *ProcessorOptions) ([]byte, error) {
 	// 使用默认选项
 	if options == nil {
 		options = &DefaultProcessorOptions
@@ -91,7 +83,7 @@ func ProcessImage(imgData []byte, processors []ImageProcessor, options *Processo
 }
 
 // Process 循环处理图片
-func Process(img image.Image, processors []ImageProcessor) (image.Image, error) {
+func Process(img image.Image, processors []Processor) (image.Image, error) {
 	var err error
 	currentImg := img
 	for _, processor := range processors {
@@ -102,4 +94,10 @@ func Process(img image.Image, processors []ImageProcessor) (image.Image, error) 
 	}
 
 	return currentImg, nil
+}
+
+type EmptyProcessor struct{}
+
+func (p *EmptyProcessor) Process(img image.Image) (image.Image, error) {
+	return img, nil
 }

@@ -65,7 +65,7 @@ func (p *TextProcessor) WithAngle(angle float64) *TextProcessor {
 	return p
 }
 
-// Process 实现ImageProcessor接口
+// Process 实现Processor接口
 func (p *TextProcessor) Process(img image.Image) (image.Image, error) {
 	// 获取原始图片尺寸
 	bounds := img.Bounds()

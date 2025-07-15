@@ -34,7 +34,7 @@ func TestCutProcessor(t *testing.T) {
 	}
 
 	// 创建切割处理器 - 居中切割
-	processors := []vimage.ImageProcessor{
+	processors := []vimage.Processor{
 		vimage.NewCutProcessor(300, 200, vimage.CutPositionCenter),
 	}
 
@@ -53,7 +53,7 @@ func TestCutProcessor(t *testing.T) {
 	fmt.Println("居中切割结果已保存到: /tmp/cut_center.jpg")
 
 	// 创建切割处理器 - 自定义区域切割
-	processors = []vimage.ImageProcessor{
+	processors = []vimage.Processor{
 		vimage.NewCutProcessorWithRegion(200, 150, 100, 50),
 	}
 
@@ -83,7 +83,7 @@ func TestZoomProcessor(t *testing.T) {
 	// 测试不同的缩放模式
 	testCases := []struct {
 		name      string
-		processor vimage.ImageProcessor
+		processor vimage.Processor
 	}{
 		{
 			name:      "exact",
@@ -114,7 +114,7 @@ func TestZoomProcessor(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			// 处理图片
-			processors := []vimage.ImageProcessor{tc.processor}
+			processors := []vimage.Processor{tc.processor}
 			resultData, err := vimage.ProcessImage(imgData, processors, nil)
 			if err != nil {
 				t.Fatalf("处理图片失败: %v", err)
@@ -141,7 +141,7 @@ func TestCombinedCutAndZoom(t *testing.T) {
 	}
 
 	// 先切割再缩放
-	processors := []vimage.ImageProcessor{
+	processors := []vimage.Processor{
 		vimage.NewCutProcessor(500, 400, vimage.CutPositionCenter),
 		vimage.NewZoomRatioProcessor(0.5),
 	}

@@ -43,7 +43,7 @@ func NewRoundedCornerProcessor(radius int) *RoundedCornerProcessor {
 	}
 }
 
-// Process 实现ImageProcessor接口
+// Process 实现Processor接口
 // 将图片的四个角切割成圆角，角外部分变为透明
 func (p *RoundedCornerProcessor) Process(img image.Image) (image.Image, error) {
 	// 获取图片边界
@@ -83,7 +83,7 @@ func (p *RoundedCornerProcessor) Process(img image.Image) (image.Image, error) {
 				r, g, b, a := img.At(x, y).RGBA()
 				// 计算新alpha
 				newA := uint8(float64(a>>8) * alpha)
-				dst.SetRGBA(x, y, color.RGBA{uint8(r>>8), uint8(g>>8), uint8(b>>8), newA})
+				dst.SetRGBA(x, y, color.RGBA{uint8(r >> 8), uint8(g >> 8), uint8(b >> 8), newA})
 			} else {
 				dst.Set(x, y, color.RGBA{0, 0, 0, 0})
 			}
@@ -93,43 +93,6 @@ func (p *RoundedCornerProcessor) Process(img image.Image) (image.Image, error) {
 	return dst, nil
 }
 
-// isInRoundedCorner 判断像素是否在圆角区域内
-// 返回true表示在圆角内部（保留），false表示在圆角外部（透明）
-func isInRoundedCorner(x, y int, bounds image.Rectangle, radius int) bool {
-
-	// 左上角
-	if x < bounds.Min.X+radius && y < bounds.Min.Y+radius {
-		// 计算到圆心的距离
-		distance := math.Sqrt(math.Pow(float64(x-(bounds.Min.X+radius)), 2) + 
-			math.Pow(float64(y-(bounds.Min.Y+radius)), 2))
-		return distance <= float64(radius)
-	}
-
-	// 右上角
-	if x >= bounds.Max.X-radius && y < bounds.Min.Y+radius {
-		distance := math.Sqrt(math.Pow(float64(x-(bounds.Max.X-radius-1)), 2) + 
-			math.Pow(float64(y-(bounds.Min.Y+radius)), 2))
-		return distance <= float64(radius)
-	}
-
-	// 左下角
-	if x < bounds.Min.X+radius && y >= bounds.Max.Y-radius {
-		distance := math.Sqrt(math.Pow(float64(x-(bounds.Min.X+radius)), 2) + 
-			math.Pow(float64(y-(bounds.Max.Y-radius-1)), 2))
-		return distance <= float64(radius)
-	}
-
-	// 右下角
-	if x >= bounds.Max.X-radius && y >= bounds.Max.Y-radius {
-		distance := math.Sqrt(math.Pow(float64(x-(bounds.Max.X-radius-1)), 2) + 
-			math.Pow(float64(y-(bounds.Max.Y-radius-1)), 2))
-		return distance <= float64(radius)
-	}
-
-	// 不在四个角，保留原像素
-	return true
-}
-
 // getCornerAlpha 计算像素在圆角区域的透明度
 // 返回0.0到1.0之间的值，表示透明度
 func getCornerAlpha(x, y int, bounds image.Rectangle, radius float64, fadeWidth float64) float64 {
@@ -137,16 +100,16 @@ func getCornerAlpha(x, y int, bounds image.Rectangle, radius float64, fadeWidth 
 
 	// 左上角
 	if float64(x) < float64(bounds.Min.X)+radius && float64(y) < float64(bounds.Min.Y)+radius {
-		distance = math.Sqrt(math.Pow(float64(x)-(float64(bounds.Min.X)+radius), 2) + 
+		distance = math.Sqrt(math.Pow(float64(x)-(float64(bounds.Min.X)+radius), 2) +
 			math.Pow(float64(y)-(float64(bounds.Min.Y)+radius), 2))
 	} else if float64(x) >= float64(bounds.Max.X)-radius && float64(y) < float64(bounds.Min.Y)+radius {
-		distance = math.Sqrt(math.Pow(float64(x)-(float64(bounds.Max.X)-radius-1), 2) + 
+		distance = math.Sqrt(math.Pow(float64(x)-(float64(bounds.Max.X)-radius-1), 2) +
 			math.Pow(float64(y)-(float64(bounds.Min.Y)+radius), 2))
 	} else if float64(x) < float64(bounds.Min.X)+radius && float64(y) >= float64(bounds.Max.Y)-radius {
-		distance = math.Sqrt(math.Pow(float64(x)-(float64(bounds.Min.X)+radius), 2) + 
+		distance = math.Sqrt(math.Pow(float64(x)-(float64(bounds.Min.X)+radius), 2) +
 			math.Pow(float64(y)-(float64(bounds.Max.Y)-radius-1), 2))
 	} else if float64(x) >= float64(bounds.Max.X)-radius && float64(y) >= float64(bounds.Max.Y)-radius {
-		distance = math.Sqrt(math.Pow(float64(x)-(float64(bounds.Max.X)-radius-1), 2) + 
+		distance = math.Sqrt(math.Pow(float64(x)-(float64(bounds.Max.X)-radius-1), 2) +
 			math.Pow(float64(y)-(float64(bounds.Max.Y)-radius-1), 2))
 	} else {
 		return 1.0
@@ -154,8 +117,8 @@ func getCornerAlpha(x, y int, bounds image.Rectangle, radius float64, fadeWidth 
 
 	if distance <= radius {
 		return 1.0
-	} else if distance <= radius + fadeWidth {
-		return 1.0 - (distance - radius) / fadeWidth
+	} else if distance <= radius+fadeWidth {
+		return 1.0 - (distance-radius)/fadeWidth
 	}
 	return 0.0
 }

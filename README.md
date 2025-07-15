@@ -28,7 +28,7 @@ go get github.com/vogo/vimage
 
 ```go
 // 创建处理器链
-processors := []vimage.ImageProcessor{
+processors := []vimage.Processor{
     // 添加多个处理器
     processor1,
     processor2,
@@ -196,7 +196,7 @@ captchaImg, err := vimage.GenerateCaptcha(captchaText, config)
 // 将图片裁剪为正方形并缩放
 func SquareAndZoomImage(imgData []byte, position string, size int) ([]byte, error) {
     // 创建处理器链
-    processors := []vimage.ImageProcessor{
+    processors := []vimage.Processor{
         // 先裁剪为正方形
         vimage.NewSquareProcessor(position),
         // 再缩放
@@ -210,7 +210,7 @@ func SquareAndZoomImage(imgData []byte, position string, size int) ([]byte, erro
 // 将图片裁剪为正方形并应用圆形裁剪
 func SquareAndCircleImage(imgData []byte, position string) ([]byte, error) {
     // 创建处理器链
-    processors := []vimage.ImageProcessor{
+    processors := []vimage.Processor{
         // 先裁剪为正方形
         vimage.NewSquareProcessor(position),
         // 再应用圆形裁剪
@@ -224,7 +224,7 @@ func SquareAndCircleImage(imgData []byte, position string) ([]byte, error) {
 // 按比例缩放图片并添加水印
 func ZoomRatioAndWatermark(imgData []byte, ratio float64, watermarkText string) ([]byte, error) {
     // 创建处理器链
-    processors := []vimage.ImageProcessor{
+    processors := []vimage.Processor{
         // 先按比例缩放
         vimage.NewZoomRatioProcessor(ratio), // 使用新的缩放处理器
         // 再添加水印
@@ -244,7 +244,7 @@ func ZoomRatioAndWatermark(imgData []byte, ratio float64, watermarkText string) 
 // 按最大边切割图片并裁剪为圆形
 func CutAndCircle(imgData []byte, maxSize int) ([]byte, error) {
     // 创建处理器链
-    processors := []vimage.ImageProcessor{
+    processors := []vimage.Processor{
         // 先裁剪为正方形
         vimage.NewCutProcessor(maxSize, maxSize, vimage.CutPositionCenter), // 使用新的切割处理器
         // 最后裁剪为圆形
@@ -258,7 +258,7 @@ func CutAndCircle(imgData []byte, maxSize int) ([]byte, error) {
 // 先切割指定区域再缩放
 func CutAndZoom(imgData []byte, cutWidth, cutHeight, x, y int, zoomRatio float64) ([]byte, error) {
     // 创建处理器链
-    processors := []vimage.ImageProcessor{
+    processors := []vimage.Processor{
         // 先切割指定区域
         vimage.NewCutProcessorWithRegion(cutWidth, cutHeight, x, y),
         // 再按比例缩放
@@ -272,7 +272,7 @@ func CutAndZoom(imgData []byte, cutWidth, cutHeight, x, y int, zoomRatio float64
 // 缩放图片并添加圆角效果
 func ZoomAndRoundedCorner(imgData []byte, width, height, cornerRadius int) ([]byte, error) {
     // 创建处理器链
-    processors := []vimage.ImageProcessor{
+    processors := []vimage.Processor{
         // 先缩放到指定尺寸
         vimage.NewZoomProcessor(width, height),
         // 再添加圆角效果

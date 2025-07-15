@@ -28,7 +28,7 @@ type SquareProcessor struct {
 	Position string // 裁剪位置："center"(默认), "top", "bottom", "left", "right"
 }
 
-// Process 实现ImageProcessor接口
+// Process 实现Processor接口
 func (p *SquareProcessor) Process(img image.Image) (image.Image, error) {
 	// 获取图片边界
 	bounds := img.Bounds()

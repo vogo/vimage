@@ -57,7 +57,7 @@ type ZoomProcessor struct {
 	Scaler draw.Scaler
 }
 
-// Process 实现ImageProcessor接口
+// Process 实现Processor接口
 func (p *ZoomProcessor) Process(img image.Image) (image.Image, error) {
 	// 获取原始图片尺寸
 	bounds := img.Bounds()

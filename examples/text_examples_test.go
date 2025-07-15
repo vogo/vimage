@@ -89,7 +89,7 @@ func TestTextWithProcessorChain(t *testing.T) {
 	img := createBackgroundImage(400, 300)
 
 	// 创建处理器链
-	processors := []vimage.ImageProcessor{
+	processors := []vimage.Processor{
 		// 先添加一个旋转45度的文本
 		vimage.NewTextProcessor(vimage.TextOptions{
 			Text:     "先添加文本",

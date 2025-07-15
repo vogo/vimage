@@ -53,7 +53,7 @@ type CutProcessor struct {
 	UseCustomRegion bool
 }
 
-// Process 实现ImageProcessor接口
+// Process 实现Processor接口
 func (p *CutProcessor) Process(img image.Image) (image.Image, error) {
 	// 获取原始图片尺寸
 	bounds := img.Bounds()

@@ -35,7 +35,7 @@ type OverlayProcessor struct {
 	Position     string      // 预设位置 ("center", "top-left", "bottom-right" 等)
 }
 
-// Process 实现ImageProcessor接口
+// Process 实现Processor接口
 func (p *OverlayProcessor) Process(img image.Image) (image.Image, error) {
 	// 获取底图边界
 	bounds := img.Bounds()

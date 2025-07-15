@@ -32,7 +32,7 @@ type NoiseProcessor struct {
 	DotColor   color.RGBA // 点颜色
 }
 
-// Process 实现ImageProcessor接口
+// Process 实现Processor接口
 func (p *NoiseProcessor) Process(img image.Image) (image.Image, error) {
 	// 获取图片边界
 	bounds := img.Bounds()

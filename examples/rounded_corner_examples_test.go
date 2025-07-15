@@ -55,7 +55,7 @@ func TestRoundedCornerProcessor(t *testing.T) {
 	}
 
 	// 输出到文件
-	if err := os.WriteFile("/tmp/rounded_corner_example.png", buf.Bytes(), 0644); err != nil {
+	if err := os.WriteFile("/tmp/rounded_corner_example.png", buf.Bytes(), 0o644); err != nil {
 		panic(err)
 	}
 

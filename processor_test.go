@@ -54,7 +54,7 @@ func TestProcessImage(t *testing.T) {
 	testImg := createTestImageForProcessor(200, 200)
 
 	// 创建处理器链
-	processors := []ImageProcessor{
+	processors := []Processor{
 		// 添加马赛克处理器
 		NewMosaicProcessor([]*MosaicRegion{
 			{
@@ -92,7 +92,7 @@ func TestMultipleProcessors(t *testing.T) {
 	testImg := createTestImageForProcessor(300, 200)
 
 	// 创建处理器链
-	processors := []ImageProcessor{
+	processors := []Processor{
 		// 添加马赛克处理器
 		NewMosaicProcessor([]*MosaicRegion{
 			{
@@ -151,7 +151,7 @@ func TestZoomProcessor(t *testing.T) {
 	testImg := createTestImageForProcessor(400, 300)
 
 	// 创建处理器链
-	processors := []ImageProcessor{
+	processors := []Processor{
 		// 添加缩放处理器
 		NewZoomProcessor(200, 150),
 	}
@@ -181,7 +181,7 @@ func TestSquareProcessorInChain(t *testing.T) {
 	testImg := createTestImageForProcessor(400, 300)
 
 	// 创建处理器链
-	processors := []ImageProcessor{
+	processors := []Processor{
 		// 添加正方形裁剪处理器
 		NewSquareProcessor("center"),
 	}
@@ -214,7 +214,7 @@ func TestSquareProcessorInChain(t *testing.T) {
 func BenchmarkProcessImage(b *testing.B) {
 	testImg := createTestImageForProcessor(200, 200)
 
-	processors := []ImageProcessor{
+	processors := []Processor{
 		NewMosaicProcessor([]*MosaicRegion{
 			{
 				FromX: 50,

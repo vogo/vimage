@@ -49,7 +49,7 @@ type MosaicRegion struct {
 func MosaicImageWithOptions(img []byte, regions []*MosaicRegion, mosaicPercent float32, startDirection Direction) ([]byte, error) {
 	// 使用新的处理器框架
 	processor := NewMosaicProcessor(regions, mosaicPercent, startDirection)
-	processors := []ImageProcessor{processor}
+	processors := []Processor{processor}
 
 	// 处理图片
 	return ProcessImage(img, processors, nil)
@@ -146,7 +146,7 @@ type MosaicProcessor struct {
 	StartDirection Direction       // 开始方向
 }
 
-// Process 实现ImageProcessor接口
+// Process 实现Processor接口
 func (p *MosaicProcessor) Process(img image.Image) (image.Image, error) {
 	// 获取图片边界
 	bounds := img.Bounds()

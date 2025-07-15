@@ -38,7 +38,7 @@ type WatermarkProcessor struct {
 	FontFace font.Face  // 字体
 }
 
-// Process 实现ImageProcessor接口
+// Process 实现Processor接口
 func (p *WatermarkProcessor) Process(img image.Image) (image.Image, error) {
 	// 获取图片边界
 	bounds := img.Bounds()

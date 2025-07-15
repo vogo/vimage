@@ -42,7 +42,7 @@ func TestOverlayProcessor(t *testing.T) {
 	}
 
 	// 创建处理器链
-	processors := []ImageProcessor{
+	processors := []Processor{
 		// 添加图层叠加处理器
 		NewOverlayProcessor(overlayImg, 50, 50, 0.8, 1.0),
 	}
@@ -87,7 +87,7 @@ func TestOverlayProcessorWithPosition(t *testing.T) {
 
 	for _, position := range positions {
 		// 创建处理器链
-		processors := []ImageProcessor{
+		processors := []Processor{
 			// 添加图层叠加处理器
 			NewOverlayProcessorWithPosition(overlayImg, position, 0.9, 1.0),
 		}
@@ -128,7 +128,7 @@ func TestOverlayProcessorWithScale(t *testing.T) {
 
 	for _, scale := range scales {
 		// 创建处理器链
-		processors := []ImageProcessor{
+		processors := []Processor{
 			// 添加图层叠加处理器
 			NewOverlayProcessor(overlayImg, 150, 100, 1.0, scale),
 		}
@@ -175,7 +175,7 @@ func TestMultipleOverlays(t *testing.T) {
 	}
 
 	// 创建处理器链
-	processors := []ImageProcessor{
+	processors := []Processor{
 		// 添加多个图层叠加处理器
 		NewOverlayProcessorWithPosition(overlayImg1, "top-left", 0.8, 1.0),
 		NewOverlayProcessorWithPosition(overlayImg2, "bottom-right", 0.8, 1.0),
