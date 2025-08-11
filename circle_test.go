@@ -61,7 +61,7 @@ func TestCircleProcessor(t *testing.T) {
 }
 
 func TestCircleProcessLocalFile(t *testing.T) {
-	b, err := os.ReadFile("/tmp/avatar.jpg")
+	b, err := os.ReadFile("build/avatar.jpg")
 	if err != nil {
 		t.Skipf("ReadFile failed: %v", err)
 	}
@@ -74,7 +74,7 @@ func TestCircleProcessLocalFile(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Process failed: %v", err)
 	}
-	outputFile := "/tmp/avatar_circle.jpg"
+	outputFile := "build/avatar_circle.jpg"
 	os.Remove(outputFile)
 	f, err := os.Create(outputFile)
 	if err != nil {

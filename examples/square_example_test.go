@@ -29,7 +29,7 @@ import (
 
 func TestSquareProcessorLocalFile(t *testing.T) {
 	// 读取本地文件进行测试
-	b, err := os.ReadFile("/tmp/avatar.jpg")
+	b, err := os.ReadFile("build/avatar.jpg")
 	if err != nil {
 		t.Skipf("ReadFile failed: %v", err)
 	}
@@ -56,7 +56,7 @@ func TestSquareProcessorLocalFile(t *testing.T) {
 		}
 
 		// 保存处理后的图片
-		outputFile := "/tmp/avatar_square_" + pos + ".jpg"
+		outputFile := "../build/avatar_square_" + pos + ".jpg"
 		os.Remove(outputFile)
 		f, err := os.Create(outputFile)
 		if err != nil {

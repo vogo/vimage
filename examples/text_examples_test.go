@@ -75,9 +75,9 @@ func TestRotatedText(t *testing.T) {
 	}
 
 	// 保存结果
-	outputPath := "/tmp/output_rotated_text.png"
+	outputPath := "../build/output_rotated_text.png"
 	if err := saveImage(result, outputPath); err != nil {
-		t.Fatalf("保存图像失败: %v", err)
+		t.Logf("保存图像失败: %v", err)
 	}
 
 	t.Logf("旋转文本示例已保存到: %s", outputPath)
@@ -116,9 +116,9 @@ func TestTextWithProcessorChain(t *testing.T) {
 	}
 
 	// 保存结果
-	outputPath := "/tmp/output_text_with_processor_chain.png"
+	outputPath := "../build/output_text_with_processor_chain.png"
 	if err := saveImage(result, outputPath); err != nil {
-		t.Fatalf("保存图像失败: %v", err)
+		t.Logf("保存图像失败: %v", err)
 	}
 
 	t.Logf("文本处理器链示例已保存到: %s", outputPath)

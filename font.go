@@ -42,7 +42,7 @@ func LoadNotoSansSCVariableFontWght() (*truetype.Font, error) {
 		return notoSansSCWghtFont, nil
 	}
 
-	localPath := "/tmp/NotoSansSC_wght.ttf"
+	localPath := "build/NotoSansSC_wght.ttf"
 
 	// check file exists
 	if _, err := os.Stat(localPath); err == nil {

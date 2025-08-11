@@ -21,6 +21,9 @@ import (
 	"image/color"
 	"os"
 	"testing"
+
+	"github.com/golang/freetype/truetype"
+	"golang.org/x/image/font/basicfont"
 )
 
 // TestGenCaptchaImage 测试验证码图片生成
@@ -53,7 +56,7 @@ func TestGenCaptchaImage(t *testing.T) {
 
 			// 可选：保存图片到文件进行手动检查
 			if os.Getenv("SAVE_TEST_IMAGES") == "true" {
-				filename := "test_captcha_" + tc.captcha + ".png"
+				filename := "build/test_captcha_" + tc.captcha + ".png"
 				if err := os.WriteFile(filename, buf.Bytes(), 0o644); err != nil {
 					t.Logf("保存测试图片失败: %v", err)
 				} else {
@@ -67,14 +70,27 @@ func TestGenCaptchaImage(t *testing.T) {
 // TestGenCaptchaImageWithConfig 测试自定义配置的验证码生成
 func TestGenCaptchaImageWithConfig(t *testing.T) {
 	// 自定义配置
-	customConfig := CaptchaConfig{
-		Width:      200,
-		Height:     60,
-		BgColor:    color.RGBA{R: 240, G: 240, B: 240, A: 255}, // 浅灰背景
-		TextColor:  color.RGBA{R: 50, G: 50, B: 200, A: 255},   // 蓝色文字
-		NoiseLines: 8,
-		NoiseDots:  80,
+	customConfig := &CaptchaConfig{
+		Width:            200,
+		Height:           60,
+		BgColor:          color.RGBA{R: 240, G: 240, B: 240, A: 255}, // 浅灰背景
+		TextColor:        color.RGBA{R: 50, G: 50, B: 200, A: 255},   // 蓝色文字
+		NoiseLines:       8,
+		NoiseDots:        80,
+		Face:             basicfont.Face7x13,
+		CharSpacing:      45, // 大字体的字符间距
+		CharWidth:        40, // 大字体的字符宽度
+		CharYOffsetRange: 12, // 大字体的垂直偏移范围
+		CharXOffsetRange: 8,  // 大字体的水平偏移范围
 	}
+
+	font, err := LoadNotoSansSCVariableFontWght()
+	if err != nil {
+		t.Fatalf("加载字体失败: %v", err)
+	}
+	customConfig.Face = truetype.NewFace(font, &truetype.Options{
+		Size: 32,
+	})
 
 	buf, err := GenCaptchaImageWithConfig("TEST", customConfig)
 	if err != nil {
@@ -87,7 +103,7 @@ func TestGenCaptchaImageWithConfig(t *testing.T) {
 
 	// 可选：保存自定义配置的图片
 	if os.Getenv("SAVE_TEST_IMAGES") == "true" {
-		if err := os.WriteFile("test_captcha_custom.png", buf.Bytes(), 0o644); err != nil {
+		if err := os.WriteFile("build/test_captcha_custom.png", buf.Bytes(), 0o644); err != nil {
 			t.Logf("保存自定义配置测试图片失败: %v", err)
 		} else {
 			t.Log("自定义配置测试图片已保存: test_captcha_custom.png")

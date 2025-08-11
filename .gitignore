@@ -31,5 +31,8 @@ go.work.sum
 .idea/
 .vscode/
 .claude/
+build/
 
 __*
+*.png
+.DS_Store

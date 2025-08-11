@@ -45,18 +45,18 @@ func TestRoundedCornerProcessor(t *testing.T) {
 	// 处理图像
 	result, err := processor.Process(img)
 	if err != nil {
-		panic(err)
+		t.Fatalf("处理图像失败: %v", err)
 	}
 
 	// 将结果保存为PNG文件
 	buf := new(bytes.Buffer)
 	if err := png.Encode(buf, result); err != nil {
-		panic(err)
+		t.Fatalf("编码PNG失败: %v", err)
 	}
 
 	// 输出到文件
-	if err := os.WriteFile("/tmp/rounded_corner_example.png", buf.Bytes(), 0o644); err != nil {
-		panic(err)
+	if err := os.WriteFile("../build/rounded_corner_example.png", buf.Bytes(), 0o644); err != nil {
+		t.Logf("保存结果图片失败: %v", err)
 	}
 
 	// 打印输出信息

@@ -32,22 +32,32 @@ import (
 
 // CaptchaConfig 验证码配置
 type CaptchaConfig struct {
-	Width      int        // 图片宽度
-	Height     int        // 图片高度
-	BgColor    color.RGBA // 背景颜色
-	TextColor  color.RGBA // 文字颜色
-	NoiseLines int        // 干扰线数量
-	NoiseDots  int        // 干扰点数量
+	Width            int        // 图片宽度
+	Height           int        // 图片高度
+	BgColor          color.RGBA // 背景颜色
+	TextColor        color.RGBA // 文字颜色
+	NoiseLines       int        // 干扰线数量
+	NoiseDots        int        // 干扰点数量
+	Face             font.Face  // 字体
+	CharSpacing      int        // 字符间距
+	CharWidth        int        // 字符宽度
+	CharYOffsetRange int        // 垂直随机偏移范围
+	CharXOffsetRange int        // 水平随机偏移范围
 }
 
 // DefaultCaptchaConfig 默认验证码配置
-var DefaultCaptchaConfig = CaptchaConfig{
-	Width:      120,
-	Height:     40,
-	BgColor:    color.RGBA{R: 255, G: 255, B: 255, A: 255}, // 白色背景
-	TextColor:  color.RGBA{R: 0, G: 0, B: 0, A: 255},       // 黑色文字
-	NoiseLines: 5,
-	NoiseDots:  50,
+var DefaultCaptchaConfig = &CaptchaConfig{
+	Width:            120,                                        // 图片宽度
+	Height:           40,                                         // 图片高度
+	BgColor:          color.RGBA{R: 255, G: 255, B: 255, A: 255}, // 白色背景
+	TextColor:        color.RGBA{R: 0, G: 0, B: 0, A: 255},       // 黑色文字
+	NoiseLines:       5,                                          // 干扰线数量
+	NoiseDots:        50,                                         // 干扰点数量
+	Face:             basicfont.Face7x13,                         // 字体
+	CharSpacing:      18,                                         // 字符间距
+	CharWidth:        16,                                         // 字符宽度
+	CharYOffsetRange: 8,                                          // 字符垂直随机偏移范围
+	CharXOffsetRange: 6,                                          // 字符水平随机偏移范围
 }
 
 // GenCaptchaImage 生成验证码图片
@@ -58,7 +68,7 @@ func GenCaptchaImage(captcha string) (*bytes.Buffer, error) {
 }
 
 // GenCaptchaImageWithConfig 使用自定义配置生成验证码图片
-func GenCaptchaImageWithConfig(captcha string, config CaptchaConfig) (*bytes.Buffer, error) {
+func GenCaptchaImageWithConfig(captcha string, config *CaptchaConfig) (*bytes.Buffer, error) {
 	// 创建图片
 	img := image.NewRGBA(image.Rect(0, 0, config.Width, config.Height))
 
@@ -86,30 +96,47 @@ func GenCaptchaImageWithConfig(captcha string, config CaptchaConfig) (*bytes.Buf
 }
 
 // drawText 绘制验证码文字
-func drawText(img *image.RGBA, text string, config CaptchaConfig) error {
-	// 使用基础字体，通过调整间距实现更大的视觉效果
-	face := basicfont.Face7x13
+func drawText(img *image.RGBA, text string, config *CaptchaConfig) error {
+	// 使用配置中的参数，如果为0则使用默认值
+	charSpacing := config.CharSpacing
+	charWidth := config.CharWidth
+	yOffsetRange := config.CharYOffsetRange
+	xOffsetRange := config.CharXOffsetRange
 
-	// 计算文字总宽度和起始位置 (字符间距加大实现2倍大小的视觉效果)
-	textWidth := len(text) * 16 // 字符间距加大到16像素 (原来7像素的2倍多)
+	// 如果配置参数为0，则根据字体类型设置默认值
+	if charSpacing == 0 {
+		charSpacing = 45
+	}
+	if charWidth == 0 {
+		charWidth = 40
+	}
+	if yOffsetRange == 0 {
+		yOffsetRange = 12
+	}
+	if xOffsetRange == 0 {
+		xOffsetRange = 8
+	}
+
+	// 计算文字总宽度和起始位置
+	textWidth := len(text) * charWidth
 	startX := (config.Width - textWidth) / 2
-	startY := config.Height/2 + 8 // 垂直居中稍微偏下
+	startY := config.Height/2 + config.Height/8 // 根据图片高度动态调整垂直位置
 
 	// 创建字体绘制器
 	d := &font.Drawer{
 		Dst:  img,
 		Src:  &image.Uniform{config.TextColor},
-		Face: face,
+		Face: config.Face,
 	}
 
 	// 逐个字符绘制，添加随机偏移
 	for i, char := range text {
 		// 添加随机垂直偏移
-		yOffset := rand.Intn(8) - 4 // -4到4的随机偏移 (适应更大字体)
+		yOffset := rand.Intn(yOffsetRange*2) - yOffsetRange
 		// 添加随机水平间距
-		xOffset := rand.Intn(6) - 3 // -3到3的随机偏移 (适应更大字体)
+		xOffset := rand.Intn(xOffsetRange*2) - xOffsetRange
 
-		x := startX + i*18 + xOffset // 字符间距约18像素 (原来的1.8倍)
+		x := startX + i*charSpacing + xOffset
 		y := startY + yOffset
 
 		d.Dot = fixed.Point26_6{
@@ -124,7 +151,7 @@ func drawText(img *image.RGBA, text string, config CaptchaConfig) error {
 }
 
 // addNoiseLines 添加干扰线
-func addNoiseLines(img *image.RGBA, config CaptchaConfig) {
+func addNoiseLines(img *image.RGBA, config *CaptchaConfig) {
 	for i := 0; i < config.NoiseLines; i++ {
 		// 随机起点和终点
 		x1 := rand.Intn(config.Width)
@@ -146,7 +173,7 @@ func addNoiseLines(img *image.RGBA, config CaptchaConfig) {
 }
 
 // addNoiseDots 添加干扰点
-func addNoiseDots(img *image.RGBA, config CaptchaConfig) {
+func addNoiseDots(img *image.RGBA, config *CaptchaConfig) {
 	for i := 0; i < config.NoiseDots; i++ {
 		x := rand.Intn(config.Width)
 		y := rand.Intn(config.Height)

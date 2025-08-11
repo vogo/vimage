@@ -60,7 +60,7 @@ func TestOverlayProcessor(t *testing.T) {
 	}
 
 	// 保存测试图片
-	err = os.WriteFile("/tmp/test_overlay_processor.png", result, 0o644)
+	err = os.WriteFile("build/test_overlay_processor.png", result, 0o644)
 	if err != nil {
 		t.Logf("Warning: Could not save test image: %v", err)
 	} else {
@@ -99,7 +99,7 @@ func TestOverlayProcessorWithPosition(t *testing.T) {
 		}
 
 		// 保存测试图片
-		filename := "/tmp/test_overlay_" + position + ".png"
+		filename := "build/test_overlay_" + position + ".png"
 		err = os.WriteFile(filename, result, 0o644)
 		if err != nil {
 			t.Logf("Warning: Could not save test image: %v", err)
@@ -140,7 +140,7 @@ func TestOverlayProcessorWithScale(t *testing.T) {
 		}
 
 		// 保存测试图片
-		filename := "/tmp/test_overlay_scale_" + fmt.Sprintf("%.1f", scale) + ".png"
+		filename := "build/test_overlay_scale_" + fmt.Sprintf("%.1f", scale) + ".png"
 		err = os.WriteFile(filename, result, 0o644)
 		if err != nil {
 			t.Logf("Warning: Could not save test image: %v", err)
@@ -189,7 +189,7 @@ func TestMultipleOverlays(t *testing.T) {
 	}
 
 	// 保存测试图片
-	err = os.WriteFile("/tmp/test_multiple_overlays.png", result, 0o644)
+	err = os.WriteFile("build/test_multiple_overlays.png", result, 0o644)
 	if err != nil {
 		t.Logf("Warning: Could not save test image: %v", err)
 	} else {
