@@ -75,12 +75,12 @@ func TestCircleProcessLocalFile(t *testing.T) {
 		t.Fatalf("Process failed: %v", err)
 	}
 	outputFile := "build/avatar_circle.jpg"
-	os.Remove(outputFile)
+	_ = os.Remove(outputFile)
 	f, err := os.Create(outputFile)
 	if err != nil {
 		t.Fatalf("Create failed: %v", err)
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 	err = jpeg.Encode(f, result, &jpeg.Options{Quality: 90})
 	if err != nil {
 		t.Fatalf("Encode failed: %v", err)

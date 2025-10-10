@@ -22,6 +22,7 @@ import (
 	"image/color"
 	"testing"
 
+	"github.com/golang/freetype/truetype"
 	"github.com/vogo/vimage"
 	"golang.org/x/image/font/basicfont"
 )
@@ -122,6 +123,40 @@ func TestTextWithProcessorChain(t *testing.T) {
 	}
 
 	t.Logf("文本处理器链示例已保存到: %s", outputPath)
+}
+
+// TestWrappedText 展示限制文本宽度并自动换行
+func TestWrappedText(t *testing.T) {
+	// 创建一个测试图像
+	img := createBackgroundImage(500, 300)
+
+	longText := "这是一段较长的文本，用于演示在给定的最大宽度内自动换行的效果。你可以调整最大宽度来观察不同的换行行为。"
+
+	// 创建文本处理器，限制宽度并自动换行
+	textProcessor := vimage.NewTextProcessor(vimage.TextOptions{
+		Text:        longText,
+		Position:    image.Point{50, 60},
+		Font:        truetype.NewFace(vimage.LoadHarmonyOSSansSCBlack(), &truetype.Options{Size: 16}),
+		Color:       color.Black,
+		MaxWidth:    200,  // 限制最大宽度为200像素
+		LineSpacing: 1.5,  // 行距倍数
+		CharWrap:    true, // 启用按字符换行，适合中文
+		// Align 默认为左对齐
+	})
+
+	// 处理图像
+	result, err := textProcessor.Process(img)
+	if err != nil {
+		t.Fatalf("处理图像失败: %v", err)
+	}
+
+	// 保存结果
+	outputPath := "../build/output_wrapped_text.png"
+	if err := saveImage(result, outputPath); err != nil {
+		t.Logf("保存图像失败: %v", err)
+	}
+
+	t.Logf("限制宽度自动换行示例已保存到: %s", outputPath)
 }
 
 // 创建一个背景图像

@@ -31,7 +31,7 @@ func saveImage(img image.Image, filename string) error {
 	if err != nil {
 		return err
 	}
-	defer file.Close()
+	defer func() { _ = file.Close() }()
 
 	// 根据文件扩展名选择编码格式
 	ext := filepath.Ext(filename)

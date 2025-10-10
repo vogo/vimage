@@ -84,10 +84,8 @@ func TestGenCaptchaImageWithConfig(t *testing.T) {
 		CharXOffsetRange: 8,  // 大字体的水平偏移范围
 	}
 
-	font, err := LoadNotoSansSCVariableFontWght()
-	if err != nil {
-		t.Fatalf("加载字体失败: %v", err)
-	}
+	font := LoadNotoSansSCVariableFontWght()
+
 	customConfig.Face = truetype.NewFace(font, &truetype.Options{
 		Size: 32,
 	})

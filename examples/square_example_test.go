@@ -57,7 +57,7 @@ func TestSquareProcessorLocalFile(t *testing.T) {
 
 		// 保存处理后的图片
 		outputFile := "../build/avatar_square_" + pos + ".jpg"
-		os.Remove(outputFile)
+		_ = os.Remove(outputFile)
 		f, err := os.Create(outputFile)
 		if err != nil {
 			t.Logf("Create failed for position %s: %v", pos, err)
@@ -65,7 +65,7 @@ func TestSquareProcessorLocalFile(t *testing.T) {
 		}
 
 		err = jpeg.Encode(f, result, &jpeg.Options{Quality: 90})
-		f.Close()
+		defer func() { _ = f.Close() }()
 		if err != nil {
 			t.Logf("Encode failed for position %s: %v", pos, err)
 		}

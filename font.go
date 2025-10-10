@@ -30,19 +30,27 @@ import (
 )
 
 var (
-	notoSansSCWghtFont      *truetype.Font
-	notoSansSCWghtFontMutex = sync.Mutex{}
+	notoSansSCWghtFont   *truetype.Font
+	harmonyOSSansSCBlack *truetype.Font
+
+	loadFontMutex = sync.Mutex{}
 )
 
-func LoadNotoSansSCVariableFontWght() (*truetype.Font, error) {
-	notoSansSCWghtFontMutex.Lock()
-	defer notoSansSCWghtFontMutex.Unlock()
+func LoadNotoSansSCVariableFontWght() *truetype.Font {
+	return LoadFont(&notoSansSCWghtFont, "/opt/NotoSansSC_wght.ttf", "https://raw.githubusercontent.com/google/fonts/refs/heads/main/ofl/notosanssc/NotoSansSC%5Bwght%5D.ttf")
+}
 
-	if notoSansSCWghtFont != nil {
-		return notoSansSCWghtFont, nil
+func LoadHarmonyOSSansSCBlack() *truetype.Font {
+	return LoadFont(&harmonyOSSansSCBlack, "/opt/HarmonyOS_Sans_SC_Black.ttf", "")
+}
+
+func LoadFont(font **truetype.Font, localPath, downloadUrl string) *truetype.Font {
+	loadFontMutex.Lock()
+	defer loadFontMutex.Unlock()
+
+	if *font != nil {
+		return *font
 	}
-
-	localPath := "build/NotoSansSC_wght.ttf"
 
 	// check file exists
 	if _, err := os.Stat(localPath); err == nil {
@@ -51,40 +59,44 @@ func LoadNotoSansSCVariableFontWght() (*truetype.Font, error) {
 			font, err := truetype.Parse(fontBytes)
 			if err == nil {
 				fmt.Printf("load font from local file: %s\n", localPath)
-				return font, nil
+				notoSansSCWghtFont = font
+				return font
 			}
 		}
 	}
 
-	url := "https://raw.githubusercontent.com/google/fonts/refs/heads/main/ofl/notosanssc/NotoSansSC%5Bwght%5D.ttf"
-	fmt.Printf("download font from: %s\n", url)
+	if downloadUrl == "" {
+		panic("font not found " + localPath)
+	}
+
+	fmt.Printf("download font from: %s\n", downloadUrl)
 
 	// 创建一个带有60秒超时的HTTP客户端
 	client := &http.Client{
 		Timeout: 60 * time.Second,
 	}
 
-	resp, err := client.Get(url)
+	resp, err := client.Get(downloadUrl)
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	fontBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	_ = os.WriteFile(localPath, fontBytes, 0o644)
 
-	font, err := truetype.Parse(fontBytes)
+	fontObj, err := truetype.Parse(fontBytes)
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
 
-	notoSansSCWghtFont = font
+	*font = fontObj
 
-	return font, nil
+	return fontObj
 }
 
 var defaultFont *truetype.Font
