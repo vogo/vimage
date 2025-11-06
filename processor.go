@@ -22,11 +22,41 @@ import (
 	"image"
 	"image/jpeg"
 	"image/png"
+
+	"github.com/fogleman/gg"
 )
 
 // Processor 定义新的处理器接口，支持选项参数
 type Processor interface {
 	Process(img image.Image) (image.Image, error)
+}
+
+type ImageProcessContext struct {
+	dc     *gg.Context
+	Width  int
+	Height int
+}
+
+func (ctx *ImageProcessContext) DC() *gg.Context {
+	return ctx.dc
+}
+
+func NewImageProcessContext(img image.Image) *ImageProcessContext {
+	bounds := img.Bounds()
+	width := bounds.Dx()
+	height := bounds.Dy()
+	dc := gg.NewContext(width, height)
+	dc.DrawImage(img, 0, 0)
+
+	return &ImageProcessContext{
+		dc:     dc,
+		Width:  width,
+		Height: height,
+	}
+}
+
+type ContextProcessor interface {
+	ContextProcess(ctx *ImageProcessContext) error
 }
 
 // ProcessorOptions 处理器选项
@@ -94,6 +124,19 @@ func Process(img image.Image, processors []Processor) (image.Image, error) {
 	}
 
 	return currentImg, nil
+}
+
+// ContextProcess 上下文处理
+func ContextProcess(img image.Image, processors []ContextProcessor) (image.Image, error) {
+	ctx := NewImageProcessContext(img)
+
+	for _, processor := range processors {
+		if err := processor.ContextProcess(ctx); err != nil {
+			return nil, err
+		}
+	}
+
+	return ctx.dc.Image(), nil
 }
 
 type EmptyProcessor struct{}

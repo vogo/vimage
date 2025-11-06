@@ -234,3 +234,40 @@ func BenchmarkProcessImage(b *testing.B) {
 		}
 	}
 }
+
+type mockContextProcessor struct {
+	err error
+}
+
+func (m *mockContextProcessor) ContextProcess(ctx *ImageProcessContext) error {
+	if m.err != nil {
+		return m.err
+	}
+	// 在图片中心画一个红色的点
+	ctx.dc.SetColor(color.RGBA{R: 255, A: 255})
+	ctx.dc.DrawPoint(float64(ctx.Width/2), float64(ctx.Height/2), 10)
+	ctx.dc.Fill()
+	return nil
+}
+
+func TestContextProcess(t *testing.T) {
+	// 创建测试图片
+	img := image.NewRGBA(image.Rect(0, 0, 100, 100))
+
+	// 创建处理器
+	processors := []ContextProcessor{
+		&mockContextProcessor{},
+	}
+
+	// 处理图片
+	resultImg, err := ContextProcess(img, processors)
+	if err != nil {
+		t.Fatalf("ContextProcess failed: %v", err)
+	}
+
+	// 验证图片是否被修改
+	// 检查图片中心的颜色是否为红色
+	if resultImg.At(50, 50) != (color.RGBA{R: 255, A: 255}) {
+		t.Fatal("image not modified by context processor")
+	}
+}

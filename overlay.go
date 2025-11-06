@@ -37,20 +37,24 @@ type OverlayProcessor struct {
 
 // Process 实现Processor接口
 func (p *OverlayProcessor) Process(img image.Image) (image.Image, error) {
-	// 获取底图边界
-	bounds := img.Bounds()
-	width := bounds.Dx()
-	height := bounds.Dy()
+	ctx := NewImageProcessContext(img)
 
-	// 创建新的上下文
-	dc := gg.NewContext(width, height)
+	if err := p.ContextProcess(ctx); err != nil {
+		return nil, err
+	}
 
-	// 绘制原图
-	dc.DrawImage(img, 0, 0)
+	return ctx.dc.Image(), nil
+}
+
+// ContextProcess 实现 ContextProcessor 接口
+func (p *OverlayProcessor) ContextProcess(ctx *ImageProcessContext) error {
+	dc := ctx.DC()
+	width := ctx.Width
+	height := ctx.Height
 
 	// 使用叠加图像
 	if p.OverlayImage == nil {
-		return nil, errors.New("未提供叠加图像")
+		return errors.New("未提供叠加图像")
 	}
 
 	// 获取叠加图像
@@ -136,7 +140,7 @@ func (p *OverlayProcessor) Process(img image.Image) (image.Image, error) {
 	// 绘制叠加图像
 	dc.DrawImage(overlayImg, int(x), int(y))
 
-	return dc.Image(), nil
+	return nil
 }
 
 // NewOverlayProcessor 创建新的图层叠加处理器

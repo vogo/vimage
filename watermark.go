@@ -40,16 +40,20 @@ type WatermarkProcessor struct {
 
 // Process 实现Processor接口
 func (p *WatermarkProcessor) Process(img image.Image) (image.Image, error) {
-	// 获取图片边界
-	bounds := img.Bounds()
-	width := bounds.Dx()
-	height := bounds.Dy()
+	ctx := NewImageProcessContext(img)
 
-	// 创建新的上下文
-	dc := gg.NewContext(width, height)
+	if err := p.ContextProcess(ctx); err != nil {
+		return nil, err
+	}
 
-	// 绘制原图
-	dc.DrawImage(img, 0, 0)
+	return ctx.dc.Image(), nil
+}
+
+// ContextProcess 实现 ContextProcessor 接口
+func (p *WatermarkProcessor) ContextProcess(ctx *ImageProcessContext) error {
+	dc := ctx.DC()
+	width := ctx.Width
+	height := ctx.Height
 
 	// 设置字体
 	if p.FontFace != nil {
@@ -94,7 +98,7 @@ func (p *WatermarkProcessor) Process(img image.Image) (image.Image, error) {
 	// 绘制水印文本
 	dc.DrawString(p.Text, x, y)
 
-	return dc.Image(), nil
+	return nil
 }
 
 // NewWatermarkProcessor 创建新的水印处理器

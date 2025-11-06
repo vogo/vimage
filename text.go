@@ -87,16 +87,19 @@ func (p *TextProcessor) WithAngle(angle float64) *TextProcessor {
 
 // Process 实现Processor接口
 func (p *TextProcessor) Process(img image.Image) (image.Image, error) {
-	// 获取原始图片尺寸
-	bounds := img.Bounds()
-	width := bounds.Dx()
-	height := bounds.Dy()
+	ctx := NewImageProcessContext(img)
 
-	// 创建gg上下文
-	dc := gg.NewContext(width, height)
+	err := p.ContextProcess(ctx)
+	if err != nil {
+		return nil, err
+	}
 
-	// 绘制原始图像
-	dc.DrawImage(img, 0, 0)
+	return ctx.dc.Image(), nil
+}
+
+// ContextProcess 实现 ContextProcessor 接口
+func (p *TextProcessor) ContextProcess(ctx *ImageProcessContext) error {
+	dc := ctx.DC()
 
 	// 设置字体和颜色
 	dc.SetFontFace(p.Options.Font)
@@ -150,7 +153,7 @@ func (p *TextProcessor) Process(img image.Image) (image.Image, error) {
 		}
 	}
 
-	return dc.Image(), nil
+	return nil
 }
 
 // containsCJK 判断文本是否包含中日韩字符，用于决定是否采用按字符换行

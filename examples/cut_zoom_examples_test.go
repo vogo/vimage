@@ -35,7 +35,7 @@ func TestCutProcessor(t *testing.T) {
 
 	// 创建切割处理器 - 居中切割
 	processors := []vimage.Processor{
-		vimage.NewCutProcessor(300, 200, vimage.CutPositionCenter),
+		vimage.NewCutProcessor(100, 100, vimage.CutPositionCenter),
 	}
 
 	// 处理图片
@@ -54,7 +54,7 @@ func TestCutProcessor(t *testing.T) {
 
 	// 创建切割处理器 - 自定义区域切割
 	processors = []vimage.Processor{
-		vimage.NewCutProcessorWithRegion(200, 150, 100, 50),
+		vimage.NewCutProcessorWithRegion(100, 100, 50, 50),
 	}
 
 	// 处理图片
@@ -142,7 +142,7 @@ func TestCombinedCutAndZoom(t *testing.T) {
 
 	// 先切割再缩放
 	processors := []vimage.Processor{
-		vimage.NewCutProcessor(500, 400, vimage.CutPositionCenter),
+		vimage.NewCutProcessor(100, 100, vimage.CutPositionCenter),
 		vimage.NewZoomRatioProcessor(0.5),
 	}
 
