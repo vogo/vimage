@@ -42,7 +42,7 @@ func TestRotateImage(t *testing.T) {
 	}
 
 	// 保存结果
-	outputPath := "build/output_rotate_45.png"
+	outputPath := "/tmp/output_rotate_45.png"
 	if err := saveImage(result, outputPath); err != nil {
 		fmt.Printf("保存图像失败: %v\n", err)
 		return
@@ -59,7 +59,7 @@ func TestRotateImage(t *testing.T) {
 	}
 
 	// 保存结果
-	outputPath = "build/output_rotate_90_yellow_bg.png"
+	outputPath = "/tmp/output_rotate_90_yellow_bg.png"
 	if err := saveImage(result, outputPath); err != nil {
 		fmt.Printf("保存图像失败: %v\n", err)
 		return
@@ -76,7 +76,7 @@ func TestRotateImage(t *testing.T) {
 	}
 
 	// 保存结果
-	outputPath = "build/output_rotate_180_keep_size.png"
+	outputPath = "/tmp/output_rotate_180_keep_size.png"
 	if err := saveImage(result, outputPath); err != nil {
 		fmt.Printf("保存图像失败: %v\n", err)
 		return

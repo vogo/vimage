@@ -76,7 +76,7 @@ func TestRotatedText(t *testing.T) {
 	}
 
 	// 保存结果
-	outputPath := "../build/output_rotated_text.png"
+	outputPath := "/tmp/output_rotated_text.png"
 	if err := saveImage(result, outputPath); err != nil {
 		t.Logf("保存图像失败: %v", err)
 	}
@@ -117,7 +117,7 @@ func TestTextWithProcessorChain(t *testing.T) {
 	}
 
 	// 保存结果
-	outputPath := "../build/output_text_with_processor_chain.png"
+	outputPath := "/tmp/output_text_with_processor_chain.png"
 	if err := saveImage(result, outputPath); err != nil {
 		t.Logf("保存图像失败: %v", err)
 	}
@@ -151,7 +151,7 @@ func TestWrappedText(t *testing.T) {
 	}
 
 	// 保存结果
-	outputPath := "../build/output_wrapped_text.png"
+	outputPath := "/tmp/output_wrapped_text.png"
 	if err := saveImage(result, outputPath); err != nil {
 		t.Logf("保存图像失败: %v", err)
 	}
@@ -164,8 +164,8 @@ func createBackgroundImage(width, height int) image.Image {
 	img := image.NewRGBA(image.Rect(0, 0, width, height))
 
 	// 填充浅灰色背景
-	for y := 0; y < height; y++ {
-		for x := 0; x < width; x++ {
+	for y := range height {
+		for x := range width {
 			img.Set(x, y, color.RGBA{240, 240, 240, 255})
 		}
 	}

@@ -33,8 +33,8 @@ import (
 func TestRoundedCornerProcessor(t *testing.T) {
 	// 创建一个测试图像 (200x200 的蓝色方块)
 	img := image.NewRGBA(image.Rect(0, 0, 200, 200))
-	for y := 0; y < 200; y++ {
-		for x := 0; x < 200; x++ {
+	for y := range 200 {
+		for x := range 200 {
 			img.Set(x, y, color.RGBA{0, 0, 255, 255}) // 蓝色
 		}
 	}
@@ -55,7 +55,7 @@ func TestRoundedCornerProcessor(t *testing.T) {
 	}
 
 	// 输出到文件
-	if err := os.WriteFile("../build/rounded_corner_example.png", buf.Bytes(), 0o644); err != nil {
+	if err := os.WriteFile("/tmp/rounded_corner_example.png", buf.Bytes(), 0o644); err != nil {
 		t.Logf("保存结果图片失败: %v", err)
 	}
 

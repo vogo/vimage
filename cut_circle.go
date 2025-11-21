@@ -24,16 +24,21 @@ import (
 	"math"
 )
 
-// CircleProcessor implements the Processor interface for circular image cropping
-type CircleProcessor struct{}
+// CutCircleProcessor implements the Processor interface for circular image cropping
+type CutCircleProcessor struct{}
 
-func NewCircleProcessor() *CircleProcessor {
-	return &CircleProcessor{}
+func NewCutCircleProcessor() *CutCircleProcessor {
+	return &CutCircleProcessor{}
 }
 
-// Process crops the image into a circle, making pixels outside the circle transparent
+// Process cuts the image into a circle.
+func (p *CutCircleProcessor) Process(img image.Image) (image.Image, error) {
+	return Circle(img)
+}
+
+// Circle crops the image into a circle, making pixels outside the circle transparent
 // If the image is not square, returns an error
-func (p *CircleProcessor) Process(img image.Image) (image.Image, error) {
+func Circle(img image.Image) (image.Image, error) {
 	// Check if image is square
 	bounds := img.Bounds()
 	width := bounds.Dx()

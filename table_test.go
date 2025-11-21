@@ -44,7 +44,7 @@ func TestGenTableImage_Basic(t *testing.T) {
 	}
 
 	// 保存测试图片
-	err = os.WriteFile("build/test_basic_table.png", buf.Bytes(), 0o644)
+	err = os.WriteFile("/tmp/test_basic_table.png", buf.Bytes(), 0o644)
 	if err != nil {
 		t.Logf("Warning: Could not save test image: %v", err)
 	} else {
@@ -77,7 +77,7 @@ func TestGenMultipleColumnsTableImage_Basic(t *testing.T) {
 	}
 
 	// 保存测试图片
-	err = os.WriteFile("build/test_columns_table.png", buf.Bytes(), 0o644)
+	err = os.WriteFile("/tmp/test_columns_table.png", buf.Bytes(), 0o644)
 	if err != nil {
 		t.Logf("Warning: Could not save test image: %v", err)
 	} else {

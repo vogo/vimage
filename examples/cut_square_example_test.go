@@ -18,33 +18,44 @@
 package examples
 
 import (
-	"bytes"
 	"image"
+	"image/color"
+	"image/draw"
 	"image/jpeg"
 	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/vogo/vimage"
 )
 
-func TestSquareProcessorLocalFile(t *testing.T) {
-	// 读取本地文件进行测试
-	b, err := os.ReadFile("build/avatar.jpg")
-	if err != nil {
-		t.Skipf("ReadFile failed: %v", err)
-	}
-
-	img, _, err := image.Decode(bytes.NewReader(b))
-	if err != nil {
-		t.Skipf("Decode failed: %v", err)
+func TestCutSquareProcessor(t *testing.T) {
+	// 构造一张非正方形的测试图片，避免依赖本地文件
+	src := image.NewRGBA(image.Rect(0, 0, 300, 200))
+	// 填充背景
+	draw.Draw(src, src.Bounds(), &image.Uniform{C: color.RGBA{240, 240, 240, 255}}, image.Point{}, draw.Src)
+	// 画出左右/上下不同色块，便于人工查看裁剪结果
+	for y := 0; y < 200; y++ {
+		for x := 0; x < 300; x++ {
+			switch {
+			case x < 50:
+				src.Set(x, y, color.RGBA{255, 0, 0, 255})
+			case x >= 250:
+				src.Set(x, y, color.RGBA{0, 0, 255, 255})
+			case y < 30:
+				src.Set(x, y, color.RGBA{0, 255, 0, 255})
+			case y >= 170:
+				src.Set(x, y, color.RGBA{255, 255, 0, 255})
+			}
+		}
 	}
 
 	// 测试不同裁剪位置
 	positions := []string{"center", "top", "bottom", "left", "right"}
 
 	for _, pos := range positions {
-		processor := vimage.NewSquareProcessor(pos)
-		result, err := processor.Process(img)
+		processor := vimage.NewCutSquareProcessor(pos)
+		result, err := processor.Process(src)
 		if err != nil {
 			t.Fatalf("Process failed with position %s: %v", pos, err)
 		}
@@ -55,18 +66,16 @@ func TestSquareProcessorLocalFile(t *testing.T) {
 			t.Errorf("Result should be square with position %s, got %dx%d", pos, bounds.Dx(), bounds.Dy())
 		}
 
-		// 保存处理后的图片
-		outputFile := "../build/avatar_square_" + pos + ".jpg"
-		_ = os.Remove(outputFile)
+		tmp := t.TempDir()
+		outputFile := filepath.Join(tmp, "avatar_square_"+pos+".jpg")
 		f, err := os.Create(outputFile)
 		if err != nil {
 			t.Logf("Create failed for position %s: %v", pos, err)
 			continue
 		}
-
-		err = jpeg.Encode(f, result, &jpeg.Options{Quality: 90})
 		defer func() { _ = f.Close() }()
-		if err != nil {
+
+		if err = jpeg.Encode(f, result, &jpeg.Options{Quality: 90}); err != nil {
 			t.Logf("Encode failed for position %s: %v", pos, err)
 		}
 	}

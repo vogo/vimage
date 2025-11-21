@@ -28,7 +28,7 @@ import (
 // TestCutProcessor 测试切割处理器
 func TestCutProcessor(t *testing.T) {
 	// 打开测试图片
-	imgData, err := os.ReadFile("../build/avatar.jpg")
+	imgData, err := os.ReadFile("/tmp/avatar.jpg")
 	if err != nil {
 		t.Skipf("读取测试图片失败: %v", err)
 	}
@@ -45,12 +45,12 @@ func TestCutProcessor(t *testing.T) {
 	}
 
 	// 保存结果
-	err = os.WriteFile("../build/cut_center.jpg", resultData, 0o644)
+	err = os.WriteFile("/tmp/cut_center.jpg", resultData, 0o644)
 	if err != nil {
 		t.Logf("保存结果图片失败: %v", err)
 	}
 
-	fmt.Println("居中切割结果已保存到: ../build/cut_center.jpg")
+	fmt.Println("居中切割结果已保存到: /tmp/cut_center.jpg")
 
 	// 创建切割处理器 - 自定义区域切割
 	processors = []vimage.Processor{
@@ -64,18 +64,18 @@ func TestCutProcessor(t *testing.T) {
 	}
 
 	// 保存结果
-	err = os.WriteFile("../build/cut_custom.jpg", resultData, 0o644)
+	err = os.WriteFile("/tmp/cut_custom.jpg", resultData, 0o644)
 	if err != nil {
 		t.Logf("保存结果图片失败: %v", err)
 	}
 
-	fmt.Println("自定义区域切割结果已保存到: ../build/cut_custom.jpg")
+	fmt.Println("自定义区域切割结果已保存到: /tmp/cut_custom.jpg")
 }
 
 // TestZoomProcessor 测试缩放处理器
 func TestZoomProcessor(t *testing.T) {
 	// 打开测试图片
-	imgData, err := os.ReadFile("../build/avatar.jpg")
+	imgData, err := os.ReadFile("/tmp/avatar.jpg")
 	if err != nil {
 		t.Skipf("读取测试图片失败: %v", err)
 	}
@@ -121,7 +121,7 @@ func TestZoomProcessor(t *testing.T) {
 			}
 
 			// 保存结果
-			outputPath := fmt.Sprintf("../build/zoom_%s.jpg", tc.name)
+			outputPath := fmt.Sprintf("/tmp/zoom_%s.jpg", tc.name)
 			err = os.WriteFile(outputPath, resultData, 0o644)
 			if err != nil {
 				t.Logf("保存结果图片失败: %v", err)
@@ -135,7 +135,7 @@ func TestZoomProcessor(t *testing.T) {
 // TestCombinedCutAndZoom 测试组合使用切割和缩放
 func TestCombinedCutAndZoom(t *testing.T) {
 	// 打开测试图片
-	imgData, err := os.ReadFile("../build/avatar.jpg")
+	imgData, err := os.ReadFile("/tmp/avatar.jpg")
 	if err != nil {
 		t.Skipf("读取测试图片失败: %v", err)
 	}
@@ -153,7 +153,7 @@ func TestCombinedCutAndZoom(t *testing.T) {
 	}
 
 	// 保存结果
-	err = os.WriteFile("../build/cut_then_zoom.jpg", resultData, 0o644)
+	err = os.WriteFile("/tmp/cut_then_zoom.jpg", resultData, 0o644)
 	if err != nil {
 		t.Logf("保存结果图片失败: %v", err)
 	}

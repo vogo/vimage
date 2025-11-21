@@ -175,15 +175,15 @@ func TestZoomProcessor(t *testing.T) {
 	}
 }
 
-// TestSquareProcessorInChain 测试正方形裁剪处理器在处理链中的使用
-func TestSquareProcessorInChain(t *testing.T) {
-	// 创建测试图片（非正方形）
+// TestCutSquareProcessorInChain tests the square cutting processor in a chain.
+func TestCutSquareProcessorInChain(t *testing.T) {
+	// create a test image (non-square)
 	testImg := createTestImageForProcessor(400, 300)
 
-	// 创建处理器链
+	// create a processor chain
 	processors := []Processor{
-		// 添加正方形裁剪处理器
-		NewSquareProcessor("center"),
+		// add a square cut processor
+		NewCutSquareProcessor("center"),
 	}
 
 	// 处理图片

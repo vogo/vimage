@@ -21,6 +21,7 @@ go get github.com/vogo/vimage
 - 噪点生成 (Noise)
 - 验证码生成 (Captcha)
 - 表格生成 (Table)
+- 绘制图形 (Draw) - 在图像上绘制圆形、矩形等图形
 
 ## 核心API用法示例
 
@@ -70,7 +71,7 @@ zoomedImg, err := zoomProcessor.Process(srcImg)
 ### 图像切割 (Cut)
 
 ```go
-// 使用预定义位置切割图像
+// 使用预定义位置切割矩形区域
 // 位置可选: "center", "top", "bottom", "left", "right"
 cutProcessor := vimage.NewCutProcessor(width, height, vimage.CutPositionCenter)
 
@@ -78,32 +79,36 @@ cutProcessor := vimage.NewCutProcessor(width, height, vimage.CutPositionCenter)
 // x, y 是左上角坐标
 cutProcessor := vimage.NewCutProcessorWithRegion(width, height, x, y)
 
-// 创建正方形切割处理器（便捷方法）
-cutProcessor := vimage.NewSquareCutProcessor(size, vimage.CutPositionCenter)
-
 // 处理图像
 cutImg, err := cutProcessor.Process(srcImg)
 ```
+
+**注意**: `CutProcessor` 是统一的切割处理器，同时支持矩形和正方形切割。
 
 
 
 ### 正方形裁剪
 
 ```go
-// 创建正方形裁剪处理器，支持不同裁剪位置
+// 创建正方形裁剪处理器，自动使用较小边的尺寸
 // 位置可选: "center", "top", "bottom", "left", "right"
-squareProcessor := vimage.NewSquareProcessor("center")
+squareProcessor := vimage.NewCutSquareProcessor("center")
+squareImg, err := squareProcessor.Process(srcImg)
 
-// 处理图像
+// 创建指定尺寸的正方形裁剪处理器
+squareProcessor := vimage.NewCutSquareProcessorWithSize(100, "center")
+squareImg, err := squareProcessor.Process(srcImg)
+
+// 使用自定义坐标裁剪正方形
+squareProcessor := vimage.NewCutSquareProcessorWithRegion(100, 50, 50) // size=100, x=50, y=50
 squareImg, err := squareProcessor.Process(srcImg)
 ```
 
 ### 圆形裁剪
-```
 
 ```go
 // 创建圆形裁剪处理器
-circleProcessor := &vimage.CircleProcessor{}
+circleProcessor := vimage.NewCutCircleProcessor()
 
 // 处理图像（注意：输入图像必须是正方形）
 circleImg, err := circleProcessor.Process(squareImg)
@@ -190,6 +195,59 @@ config := &vimage.CaptchaConfig{
 captchaImg, err := vimage.GenerateCaptcha(captchaText, config)
 ```
 
+### 绘制图形
+
+#### 绘制圆形
+
+```go
+// 在图像上绘制圆形边框
+circleProcessor := vimage.NewDrawCircleProcessor(
+    centerX,  // 圆心X坐标
+    centerY,  // 圆心Y坐标
+    radius,   // 半径
+    color.RGBA{R: 255, G: 0, B: 0, A: 255}, // 颜色
+    false,    // false = 只绘制边框，true = 填充圆形
+)
+result, err := circleProcessor.Process(srcImg)
+
+// 绘制填充的圆形
+filledCircleProcessor := vimage.NewDrawCircleProcessor(
+    100, 100, 50,
+    color.RGBA{R: 0, G: 255, B: 0, A: 255},
+    true, // 填充圆形
+)
+result, err := filledCircleProcessor.Process(srcImg)
+```
+
+#### 绘制矩形
+
+```go
+// 在图像上绘制矩形边框
+rect := image.Rect(x1, y1, x2, y2) // 定义矩形区域
+rectProcessor := vimage.NewDrawRectProcessor(
+    rect,
+    color.RGBA{R: 0, G: 0, B: 255, A: 255}, // 颜色
+    false, // false = 只绘制边框，true = 填充矩形
+)
+result, err := rectProcessor.Process(srcImg)
+
+// 绘制填充的矩形
+filledRectProcessor := vimage.NewDrawRectProcessor(
+    image.Rect(20, 20, 80, 80),
+    color.RGBA{R: 255, G: 255, B: 0, A: 255},
+    true, // 填充矩形
+)
+result, err := filledRectProcessor.Process(srcImg)
+
+// 绘制带有不同边框和填充颜色的矩形
+bicolorRectProcessor := vimage.NewDrawRectProcessorWithFillColor(
+    image.Rect(20, 20, 80, 80),
+    color.RGBA{R: 0, G: 0, B: 255, A: 255},   // 蓝色边框
+    color.RGBA{R: 255, G: 255, B: 0, A: 255}, // 黄色填充
+)
+result, err := bicolorRectProcessor.Process(srcImg)
+```
+
 ### 组合使用示例
 
 ```go
@@ -198,7 +256,7 @@ func SquareAndZoomImage(imgData []byte, position string, size int) ([]byte, erro
     // 创建处理器链
     processors := []vimage.Processor{
         // 先裁剪为正方形
-        vimage.NewSquareProcessor(position),
+        vimage.NewCutSquareProcessor(position),
         // 再缩放
         vimage.NewZoomProcessor(size, size),
     }
@@ -212,9 +270,9 @@ func SquareAndCircleImage(imgData []byte, position string) ([]byte, error) {
     // 创建处理器链
     processors := []vimage.Processor{
         // 先裁剪为正方形
-        vimage.NewSquareProcessor(position),
+        vimage.NewCutSquareProcessor(position),
         // 再应用圆形裁剪
-        &vimage.CircleProcessor{},
+        vimage.NewCutCircleProcessor(),
     }
 
     // 处理图片
@@ -231,7 +289,7 @@ func ZoomRatioAndWatermark(imgData []byte, ratio float64, watermarkText string) 
         &vimage.WatermarkProcessor{
             Text:     watermarkText,
             FontSize: 24,
-            Color:    image.White, // 使用预定义的白色
+            Color:    color.White,
             Opacity:  0.7,
             Position: "bottom-right",
         },
@@ -248,7 +306,7 @@ func CutAndCircle(imgData []byte, maxSize int) ([]byte, error) {
         // 先裁剪为正方形
         vimage.NewCutProcessor(maxSize, maxSize, vimage.CutPositionCenter), // 使用新的切割处理器
         // 最后裁剪为圆形
-        &vimage.CircleProcessor{},
+        vimage.NewCutCircleProcessor(),
     }
 
     // 处理图片

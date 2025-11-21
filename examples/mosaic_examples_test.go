@@ -25,7 +25,7 @@ import (
 )
 
 func TestMosaicLocalImage(t *testing.T) {
-	testImg, err := os.ReadFile("../build/test_cert.jpeg")
+	testImg, err := os.ReadFile("/tmp/test_cert.jpeg")
 	if err != nil {
 		t.Skipf("读取测试图片失败: %v", err)
 	}
@@ -35,7 +35,7 @@ func TestMosaicLocalImage(t *testing.T) {
 	if err != nil {
 		t.Fatalf("马赛克处理失败: %v", err)
 	}
-	if err := os.WriteFile("../build/test_cert_mosaic.jpeg", result, 0o644); err != nil {
+	if err := os.WriteFile("/tmp/test_cert_mosaic.jpeg", result, 0o644); err != nil {
 		t.Logf("保存马赛克图片失败: %v", err)
 	}
 }
