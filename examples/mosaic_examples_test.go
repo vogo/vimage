@@ -36,6 +36,6 @@ func TestMosaicLocalImage(t *testing.T) {
 		t.Fatalf("马赛克处理失败: %v", err)
 	}
 	if err := os.WriteFile("/tmp/test_cert_mosaic.jpeg", result, 0o644); err != nil {
-		t.Logf("保存马赛克图片失败: %v", err)
+		t.Logf("failed to save mosaic image | output_path: /tmp/test_cert_mosaic.jpeg | err: %v", err)
 	}
 }

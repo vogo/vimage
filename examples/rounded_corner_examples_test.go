@@ -56,9 +56,9 @@ func TestRoundedCornerProcessor(t *testing.T) {
 
 	// 输出到文件
 	if err := os.WriteFile("/tmp/rounded_corner_example.png", buf.Bytes(), 0o644); err != nil {
-		t.Logf("保存结果图片失败: %v", err)
+		t.Logf("failed to save rounded corner image | output_path: /tmp/rounded_corner_example.png | err: %v", err)
 	}
 
 	// 打印输出信息
-	fmt.Println("圆角处理器示例已保存到/tmp/rounded_corner_example.png")
+	fmt.Println("rounded corner example saved successfully | output_path: /tmp/rounded_corner_example.png")
 }

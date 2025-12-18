@@ -46,12 +46,12 @@ func TestGenTableImage_Basic(t *testing.T) {
 	// 保存测试图片
 	err = os.WriteFile("/tmp/test_basic_table.png", buf.Bytes(), 0o644)
 	if err != nil {
-		t.Logf("Warning: Could not save test image: %v", err)
+		t.Logf("warning: failed to save basic table test image | output_path: /tmp/test_basic_table.png | err: %v", err)
 	} else {
-		t.Logf("基本测试图片已保存到: /tmp/test_basic_table.png")
+		t.Logf("basic table test image saved successfully | output_path: /tmp/test_basic_table.png")
 	}
 
-	t.Logf("基本表格生成成功，图片大小: %d 字节", buf.Len())
+	t.Logf("basic table generated successfully | image_size_bytes: %d", buf.Len())
 }
 
 func TestGenMultipleColumnsTableImage_Basic(t *testing.T) {
@@ -79,10 +79,10 @@ func TestGenMultipleColumnsTableImage_Basic(t *testing.T) {
 	// 保存测试图片
 	err = os.WriteFile("/tmp/test_columns_table.png", buf.Bytes(), 0o644)
 	if err != nil {
-		t.Logf("Warning: Could not save test image: %v", err)
+		t.Logf("warning: failed to save columns table test image | output_path: /tmp/test_columns_table.png | err: %v", err)
 	} else {
-		t.Logf("列式表格测试图片已保存到: /tmp/test_columns_table.png")
+		t.Logf("columns table test image saved successfully | output_path: /tmp/test_columns_table.png")
 	}
 
-	t.Logf("列式表格生成成功，图片大小: %d 字节", buf.Len())
+	t.Logf("columns table generated successfully | image_size_bytes: %d", buf.Len())
 }

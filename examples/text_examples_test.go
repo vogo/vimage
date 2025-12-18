@@ -78,10 +78,10 @@ func TestRotatedText(t *testing.T) {
 	// 保存结果
 	outputPath := "/tmp/output_rotated_text.png"
 	if err := saveImage(result, outputPath); err != nil {
-		t.Logf("保存图像失败: %v", err)
+		t.Logf("failed to save image | output_path: %s | err: %v", outputPath, err)
 	}
 
-	t.Logf("旋转文本示例已保存到: %s", outputPath)
+	t.Logf("rotated text example saved successfully | output_path: %s", outputPath)
 }
 
 // TestTextWithProcessorChain 展示如何将文本处理器与其他处理器组合使用
@@ -119,10 +119,10 @@ func TestTextWithProcessorChain(t *testing.T) {
 	// 保存结果
 	outputPath := "/tmp/output_text_with_processor_chain.png"
 	if err := saveImage(result, outputPath); err != nil {
-		t.Logf("保存图像失败: %v", err)
+		t.Logf("failed to save image | output_path: %s | err: %v", outputPath, err)
 	}
 
-	t.Logf("文本处理器链示例已保存到: %s", outputPath)
+	t.Logf("text processor chain example saved successfully | output_path: %s", outputPath)
 }
 
 // TestWrappedText 展示限制文本宽度并自动换行
@@ -153,10 +153,10 @@ func TestWrappedText(t *testing.T) {
 	// 保存结果
 	outputPath := "/tmp/output_wrapped_text.png"
 	if err := saveImage(result, outputPath); err != nil {
-		t.Logf("保存图像失败: %v", err)
+		t.Logf("failed to save image | output_path: %s | err: %v", outputPath, err)
 	}
 
-	t.Logf("限制宽度自动换行示例已保存到: %s", outputPath)
+	t.Logf("wrapped text example saved successfully | output_path: %s", outputPath)
 }
 
 // 创建一个背景图像

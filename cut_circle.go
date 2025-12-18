@@ -22,6 +22,7 @@ import (
 	"image"
 	"image/color"
 	"math"
+	"strconv"
 )
 
 // CutCircleProcessor implements the Processor interface for circular image cropping
@@ -44,7 +45,7 @@ func Circle(img image.Image) (image.Image, error) {
 	width := bounds.Dx()
 	height := bounds.Dy()
 	if width != height {
-		return nil, errors.New("image must be square for circular cropping")
+		return nil, errors.New("image must be square for circular cropping | image_width: " + strconv.Itoa(width) + " | image_height: " + strconv.Itoa(height))
 	}
 
 	// Get circle radius (default to half of width/height)

@@ -37,52 +37,52 @@ func TestRotateImage(t *testing.T) {
 	// 处理图像
 	result, err := rotateProcessor.Process(img)
 	if err != nil {
-		fmt.Printf("旋转图像失败: %v\n", err)
+		fmt.Printf("failed to rotate image | rotation_angle: 45 | err: %v\n", err)
 		return
 	}
 
 	// 保存结果
 	outputPath := "/tmp/output_rotate_45.png"
 	if err := saveImage(result, outputPath); err != nil {
-		fmt.Printf("保存图像失败: %v\n", err)
+		fmt.Printf("failed to save rotated image | output_path: %s | err: %v\n", outputPath, err)
 		return
 	}
 
-	fmt.Printf("图像已旋转45度并保存到: %s\n", outputPath)
+	fmt.Printf("image rotated 45 degrees and saved successfully | output_path: %s\n", outputPath)
 
 	// 使用自定义背景色旋转90度
 	rotateProcessor = vimage.NewRotateProcessor(90).WithBackground(color.RGBA{255, 255, 0, 255}) // 黄色背景
 	result, err = rotateProcessor.Process(img)
 	if err != nil {
-		fmt.Printf("旋转图像失败: %v\n", err)
+		fmt.Printf("failed to rotate image | rotation_angle: 90 | background_color: yellow | err: %v\n", err)
 		return
 	}
 
 	// 保存结果
 	outputPath = "/tmp/output_rotate_90_yellow_bg.png"
 	if err := saveImage(result, outputPath); err != nil {
-		fmt.Printf("保存图像失败: %v\n", err)
+		fmt.Printf("failed to save rotated image | output_path: %s | err: %v\n", outputPath, err)
 		return
 	}
 
-	fmt.Printf("图像已旋转90度（黄色背景）并保存到: %s\n", outputPath)
+	fmt.Printf("image rotated 90 degrees with yellow background and saved successfully | output_path: %s\n", outputPath)
 
 	// 保持原始尺寸旋转180度
 	rotateProcessor = vimage.NewRotateProcessor(180).WithKeepSize(true)
 	result, err = rotateProcessor.Process(img)
 	if err != nil {
-		fmt.Printf("旋转图像失败: %v\n", err)
+		fmt.Printf("failed to rotate image | rotation_angle: 180 | keep_size: true | err: %v\n", err)
 		return
 	}
 
 	// 保存结果
 	outputPath = "/tmp/output_rotate_180_keep_size.png"
 	if err := saveImage(result, outputPath); err != nil {
-		fmt.Printf("保存图像失败: %v\n", err)
+		fmt.Printf("failed to save rotated image | output_path: %s | err: %v\n", outputPath, err)
 		return
 	}
 
-	fmt.Printf("图像已旋转180度（保持原始尺寸）并保存到: %s\n", outputPath)
+	fmt.Printf("image rotated 180 degrees with keep size and saved successfully | output_path: %s\n", outputPath)
 
 	// Output:
 	// 图像已旋转45度并保存到: output_rotate_45.png

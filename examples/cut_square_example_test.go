@@ -70,13 +70,13 @@ func TestCutSquareProcessor(t *testing.T) {
 		outputFile := filepath.Join(tmp, "avatar_square_"+pos+".jpg")
 		f, err := os.Create(outputFile)
 		if err != nil {
-			t.Logf("Create failed for position %s: %v", pos, err)
+			t.Logf("failed to create file for square cut | position: %s | output_path: %s | err: %v", pos, outputFile, err)
 			continue
 		}
 		defer func() { _ = f.Close() }()
 
 		if err = jpeg.Encode(f, result, &jpeg.Options{Quality: 90}); err != nil {
-			t.Logf("Encode failed for position %s: %v", pos, err)
+			t.Logf("failed to encode jpeg for square cut | position: %s | output_path: %s | err: %v", pos, outputFile, err)
 		}
 	}
 }

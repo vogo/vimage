@@ -58,9 +58,9 @@ func TestGenCaptchaImage(t *testing.T) {
 			if os.Getenv("SAVE_TEST_IMAGES") == "true" {
 				filename := "build/test_captcha_" + tc.captcha + ".png"
 				if err := os.WriteFile(filename, buf.Bytes(), 0o644); err != nil {
-					t.Logf("保存测试图片失败: %v", err)
+					t.Logf("failed to save captcha test image | captcha_text: %s | output_path: %s | err: %v", tc.captcha, filename, err)
 				} else {
-					t.Logf("测试图片已保存: %s", filename)
+					t.Logf("captcha test image saved successfully | captcha_text: %s | output_path: %s", tc.captcha, filename)
 				}
 			}
 		})
@@ -102,9 +102,9 @@ func TestGenCaptchaImageWithConfig(t *testing.T) {
 	// 可选：保存自定义配置的图片
 	if os.Getenv("SAVE_TEST_IMAGES") == "true" {
 		if err := os.WriteFile("build/test_captcha_custom.png", buf.Bytes(), 0o644); err != nil {
-			t.Logf("保存自定义配置测试图片失败: %v", err)
+			t.Logf("failed to save custom captcha test image | output_path: build/test_captcha_custom.png | err: %v", err)
 		} else {
-			t.Log("自定义配置测试图片已保存: test_captcha_custom.png")
+			t.Log("custom captcha test image saved successfully | output_path: build/test_captcha_custom.png")
 		}
 	}
 }

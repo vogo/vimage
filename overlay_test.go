@@ -62,9 +62,9 @@ func TestOverlayProcessor(t *testing.T) {
 	// 保存测试图片
 	err = os.WriteFile("build/test_overlay_processor.png", result, 0o644)
 	if err != nil {
-		t.Logf("Warning: Could not save test image: %v", err)
+		t.Logf("warning: failed to save overlay processor test image | output_path: build/test_overlay_processor.png | err: %v", err)
 	} else {
-		t.Logf("处理后的图片已保存到: /tmp/test_overlay_processor.png")
+		t.Logf("overlay processor test image saved successfully | output_path: /tmp/test_overlay_processor.png")
 	}
 }
 
@@ -102,9 +102,9 @@ func TestOverlayProcessorWithPosition(t *testing.T) {
 		filename := "build/test_overlay_" + position + ".png"
 		err = os.WriteFile(filename, result, 0o644)
 		if err != nil {
-			t.Logf("Warning: Could not save test image: %v", err)
+			t.Logf("warning: failed to save overlay test image | position: %s | output_path: %s | err: %v", position, filename, err)
 		} else {
-			t.Logf("处理后的图片已保存到: %s", filename)
+			t.Logf("overlay test image saved successfully | position: %s | output_path: %s", position, filename)
 		}
 	}
 }
@@ -143,9 +143,9 @@ func TestOverlayProcessorWithScale(t *testing.T) {
 		filename := "build/test_overlay_scale_" + fmt.Sprintf("%.1f", scale) + ".png"
 		err = os.WriteFile(filename, result, 0o644)
 		if err != nil {
-			t.Logf("Warning: Could not save test image: %v", err)
+			t.Logf("warning: failed to save overlay scale test image | scale_factor: %f | output_path: %s | err: %v", scale, filename, err)
 		} else {
-			t.Logf("处理后的图片已保存到: %s", filename)
+			t.Logf("overlay scale test image saved successfully | scale_factor: %f | output_path: %s", scale, filename)
 		}
 	}
 }
@@ -191,9 +191,9 @@ func TestMultipleOverlays(t *testing.T) {
 	// 保存测试图片
 	err = os.WriteFile("build/test_multiple_overlays.png", result, 0o644)
 	if err != nil {
-		t.Logf("Warning: Could not save test image: %v", err)
+		t.Logf("warning: failed to save multiple overlays test image | output_path: build/test_multiple_overlays.png | err: %v", err)
 	} else {
-		t.Logf("处理后的图片已保存到: /tmp/test_multiple_overlays.png")
+		t.Logf("multiple overlays test image saved successfully | output_path: /tmp/test_multiple_overlays.png")
 	}
 }
 

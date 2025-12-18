@@ -58,7 +58,7 @@ func LoadFont(font **truetype.Font, localPath, downloadUrl string) *truetype.Fon
 		if err == nil {
 			font, err := truetype.Parse(fontBytes)
 			if err == nil {
-				fmt.Printf("load font from local file: %s\n", localPath)
+				fmt.Printf("loaded font from local file | font_path: %s\n", localPath)
 				notoSansSCWghtFont = font
 				return font
 			}
@@ -66,10 +66,10 @@ func LoadFont(font **truetype.Font, localPath, downloadUrl string) *truetype.Fon
 	}
 
 	if downloadUrl == "" {
-		panic("font not found " + localPath)
+		panic("font not found | font_path: " + localPath)
 	}
 
-	fmt.Printf("download font from: %s\n", downloadUrl)
+	fmt.Printf("downloading font from url | font_url: %s\n", downloadUrl)
 
 	// 创建一个带有60秒超时的HTTP客户端
 	client := &http.Client{
@@ -78,20 +78,20 @@ func LoadFont(font **truetype.Font, localPath, downloadUrl string) *truetype.Fon
 
 	resp, err := client.Get(downloadUrl)
 	if err != nil {
-		panic(err)
+		panic("failed to download font | font_url: " + downloadUrl + " | err: " + err.Error())
 	}
 	defer func() { _ = resp.Body.Close() }()
 
 	fontBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
-		panic(err)
+		panic("failed to read font download response | font_url: " + downloadUrl + " | err: " + err.Error())
 	}
 
 	_ = os.WriteFile(localPath, fontBytes, 0o644)
 
 	fontObj, err := truetype.Parse(fontBytes)
 	if err != nil {
-		panic(err)
+		panic("failed to parse font | font_url: " + downloadUrl + " | err: " + err.Error())
 	}
 
 	*font = fontObj

@@ -47,10 +47,10 @@ func TestCutProcessor(t *testing.T) {
 	// 保存结果
 	err = os.WriteFile("/tmp/cut_center.jpg", resultData, 0o644)
 	if err != nil {
-		t.Logf("保存结果图片失败: %v", err)
+		t.Logf("failed to save center cut image | output_path: /tmp/cut_center.jpg | err: %v", err)
 	}
 
-	fmt.Println("居中切割结果已保存到: /tmp/cut_center.jpg")
+	fmt.Println("center cut result saved successfully | output_path: /tmp/cut_center.jpg")
 
 	// 创建切割处理器 - 自定义区域切割
 	processors = []vimage.Processor{
@@ -66,10 +66,10 @@ func TestCutProcessor(t *testing.T) {
 	// 保存结果
 	err = os.WriteFile("/tmp/cut_custom.jpg", resultData, 0o644)
 	if err != nil {
-		t.Logf("保存结果图片失败: %v", err)
+		t.Logf("failed to save custom cut image | output_path: /tmp/cut_custom.jpg | err: %v", err)
 	}
 
-	fmt.Println("自定义区域切割结果已保存到: /tmp/cut_custom.jpg")
+	fmt.Println("custom area cut result saved successfully | output_path: /tmp/cut_custom.jpg")
 }
 
 // TestZoomProcessor 测试缩放处理器
@@ -124,10 +124,10 @@ func TestZoomProcessor(t *testing.T) {
 			outputPath := fmt.Sprintf("/tmp/zoom_%s.jpg", tc.name)
 			err = os.WriteFile(outputPath, resultData, 0o644)
 			if err != nil {
-				t.Logf("保存结果图片失败: %v", err)
+				t.Logf("failed to save zoom image | zoom_type: %s | output_path: %s | err: %v", tc.name, outputPath, err)
 			}
 
-			fmt.Printf("%s缩放结果已保存到: %s\n", tc.name, outputPath)
+			fmt.Printf("zoom result saved successfully | zoom_type: %s | output_path: %s\n", tc.name, outputPath)
 		})
 	}
 }
@@ -155,8 +155,8 @@ func TestCombinedCutAndZoom(t *testing.T) {
 	// 保存结果
 	err = os.WriteFile("/tmp/cut_then_zoom.jpg", resultData, 0o644)
 	if err != nil {
-		t.Logf("保存结果图片失败: %v", err)
+		t.Logf("failed to save cut then zoom image | output_path: /tmp/cut_then_zoom.jpg | err: %v", err)
 	}
 
-	fmt.Println("先切割再缩放结果已保存到: /tmp/cut_then_zoom.jpg")
+	fmt.Println("cut then zoom result saved successfully | output_path: /tmp/cut_then_zoom.jpg")
 }

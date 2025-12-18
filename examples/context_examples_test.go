@@ -33,8 +33,8 @@ func ExampleDrawCircleProcessor() {
 
 	c := result.At(x0+r-1, y0).(color.RGBA)
 	// Due to anti-aliasing, the edge color may not be exactly 255
-	fmt.Println(c.R > 0, c.G, c.B)
-	// Output: true 0 0
+	fmt.Printf("circle edge check | has_red: %t | green_value: %d | blue_value: %d\n", c.R > 0, c.G, c.B)
+	// Output: circle edge check | has_red: true | green_value: 0 | blue_value: 0
 }
 
 func ExampleDrawCircleProcessor_filled() {
@@ -45,8 +45,8 @@ func ExampleDrawCircleProcessor_filled() {
 
 	// Check center of the filled circle
 	c := result.At(x0, y0).(color.RGBA)
-	fmt.Println(c.R, c.G, c.B)
-	// Output: 255 0 0
+	fmt.Printf("filled circle center check | red_value: %d | green_value: %d | blue_value: %d\n", c.R, c.G, c.B)
+	// Output: filled circle center check | red_value: 255 | green_value: 0 | blue_value: 0
 }
 
 func ExampleDrawRectProcessor() {
@@ -56,8 +56,8 @@ func ExampleDrawRectProcessor() {
 	result, _ := processor.Process(img)
 
 	c := result.At(50, 50).(color.RGBA)
-	fmt.Println(c.R, c.G, c.B)
-	// Output: 0 255 0
+	fmt.Printf("filled rectangle center check | red_value: %d | green_value: %d | blue_value: %d\n", c.R, c.G, c.B)
+	// Output: filled rectangle center check | red_value: 0 | green_value: 255 | blue_value: 0
 }
 
 func ExampleDrawRectProcessor_stroked() {
@@ -68,8 +68,8 @@ func ExampleDrawRectProcessor_stroked() {
 
 	// Check edge point
 	c := result.At(20, 20).(color.RGBA)
-	fmt.Println(c.G > 0)
-	// Output: true
+	fmt.Printf("rectangle edge check | has_green: %t\n", c.G > 0)
+	// Output: rectangle edge check | has_green: true
 }
 
 func ExampleDrawRectProcessor_withFillColor() {
@@ -85,6 +85,6 @@ func ExampleDrawRectProcessor_withFillColor() {
 
 	c := result.At(50, 50).(color.RGBA)
 	// Inside should be yellow
-	fmt.Println(c.R > 200 && c.G > 200 && c.B < 50)
-	// Output: true
+	fmt.Printf("complex shape center check | is_yellow: %t | red_value: %d | green_value: %d | blue_value: %d\n", c.R > 200 && c.G > 200 && c.B < 50, c.R, c.G, c.B)
+	// Output: complex shape center check | is_yellow: true | red_value: 255 | green_value: 255 | blue_value: 0
 }

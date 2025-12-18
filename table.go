@@ -277,7 +277,7 @@ func GenMultipleRowsTableImage(font *truetype.Font, headers []string, data [][]s
 	buf := new(bytes.Buffer)
 	err := png.Encode(buf, dc.Image())
 	if err != nil {
-		log.Fatal("图片编码失败:", err)
+		log.Fatal("failed to encode image | err:", err)
 	}
 
 	return buf, nil

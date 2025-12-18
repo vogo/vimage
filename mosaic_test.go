@@ -43,7 +43,7 @@ func createTestImage(width, height int) []byte {
 	// 编码为PNG
 	buf := new(bytes.Buffer)
 	if err := png.Encode(buf, img); err != nil {
-		panic(err) // 在测试辅助函数中，可以使用panic处理错误
+		panic("failed to encode png in test helper | err: " + err.Error()) // 在测试辅助函数中，可以使用panic处理错误
 	}
 	return buf.Bytes()
 }

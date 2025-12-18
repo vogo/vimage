@@ -54,7 +54,7 @@ func (p *OverlayProcessor) ContextProcess(ctx *ImageProcessContext) error {
 
 	// 使用叠加图像
 	if p.OverlayImage == nil {
-		return errors.New("未提供叠加图像")
+		return errors.New("overlay image not provided | error: missing_overlay_image")
 	}
 
 	// 获取叠加图像
