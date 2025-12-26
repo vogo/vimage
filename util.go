@@ -17,42 +17,10 @@
 
 package vimage
 
-import (
-	"image"
-	"image/color"
-)
-
-// DrawLine draws a line (simple Bresenham algorithm implementation)
-func DrawLine(img *image.RGBA, x0, y0, x1, y1 int, c color.RGBA) {
-	dx := abs(x1 - x0)
-	dy := abs(y1 - y0)
-	sx := -1
-	sy := -1
-
-	if x0 < x1 {
-		sx = 1
+// abs returns absolute value of integer
+func abs(x int) int {
+	if x < 0 {
+		return -x
 	}
-	if y0 < y1 {
-		sy = 1
-	}
-
-	err := dx - dy
-
-	for {
-		img.Set(x0, y0, c)
-
-		if x0 == x1 && y0 == y1 {
-			break
-		}
-
-		e2 := 2 * err
-		if e2 > -dy {
-			err -= dy
-			x0 += sx
-		}
-		if e2 < dx {
-			err += dx
-			y0 += sy
-		}
-	}
+	return x
 }
